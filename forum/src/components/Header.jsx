@@ -19,8 +19,8 @@ export default function Header() {
       <nav>
         <NavLink to="/">Home</NavLink>
         {user && (<>
-          <NavLink to="/tweets">All posts</NavLink>
-          <NavLink to="/tweets-create">Create post</NavLink>
+          <NavLink to="/posts">All posts</NavLink>
+          <NavLink to="/posts-create">Create post</NavLink>
         </>)}
         {!user && <NavLink to="/login">Login</NavLink>}
         {!user && <NavLink to="/register">Register</NavLink>}

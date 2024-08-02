@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useContext } from 'react';
 import PropTypes from 'prop-types';
-import { getComments, addComment } from '../services/tweets.service';
+import { getComments, addComment } from '../services/posts.service';
 import { getUserNameByHandle } from '../services/users.service'; // Import the function
 import { AppContext } from '../state/app.context';
 
-const Comments = ({ tweetId, limit = 3 }) => {
+const Comments = ({ postId, limit = 3 }) => {
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState('');
   const [showAll, setShowAll] = useState(false);
@@ -13,7 +13,7 @@ const Comments = ({ tweetId, limit = 3 }) => {
 
   useEffect(() => {
     const fetchComments = async () => {
-      const commentsData = await getComments(tweetId);
+      const commentsData = await getComments(postId);
       setComments(commentsData);
       
       // Fetch user names for the comments
@@ -30,13 +30,13 @@ const Comments = ({ tweetId, limit = 3 }) => {
     };
 
     fetchComments();
-  }, [tweetId]);
+  }, [postId]);
 
   const handleAddComment = async () => {
     if (newComment.trim()) {
-      await addComment(tweetId, newComment, userData.handle);
+      await addComment(postId, newComment, userData.handle);
       setNewComment('');
-      const commentsData = await getComments(tweetId);
+      const commentsData = await getComments(postId);
       setComments(commentsData);
       
       const handles = commentsData.map(comment => comment.userHandle);
@@ -83,7 +83,7 @@ const Comments = ({ tweetId, limit = 3 }) => {
 };
 
 Comments.propTypes = {
-  tweetId: PropTypes.string.isRequired,
+  postId: PropTypes.string.isRequired,
   limit: PropTypes.number,
 };
 

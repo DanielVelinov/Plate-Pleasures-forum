@@ -1,19 +1,19 @@
 import { useEffect, useState } from "react"
-import { getAllTweets } from "../services/tweets.service";
+import { getAllPosts } from "../services/posts.service";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import Comments from '../components/Comments';
 
-export default function AllTweets() {
-  const [tweets, setTweets] = useState([]);
+export default function AllPosts() {
+  const [posts, setPosts] = useState([]);
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const search = searchParams.get('search') ?? '';
 
-  console.log(tweets);
+  console.log(posts);
 
   useEffect(() => {
-    getAllTweets(search)
-      .then(tweets => setTweets(tweets))
+    getAllPosts(search)
+      .then(posts => setPosts(posts))
       .catch(error => alert(error.message));
   }, [search]);
 
@@ -28,15 +28,15 @@ export default function AllTweets() {
       <h1>Posts:</h1>
       <label htmlFor="search"></label>
       <input value={search} onChange={e => setSearch(e.target.value)} type="text" name="search" id="search" /><br/><br/>
-      {tweets.length > 0
-      ? tweets.map(t => (
+      {posts.length > 0
+      ? posts.map(t => (
         <div key={t.id}>
           <h3>{t.title}</h3>
-          <p>{t.content} <button onClick={() => navigate(`/tweets/${t.id}`)}>See more</button></p>
-          <Comments tweetId={t.id} limit={3} />
+          <p>{t.content} <button onClick={() => navigate(`/posts/${t.id}`)}>See more</button></p>
+          <Comments postId={t.id} limit={3} />
         </div>
       ))
-      : 'No tweets'
+      : 'No posts'
       }
     </div>
   )

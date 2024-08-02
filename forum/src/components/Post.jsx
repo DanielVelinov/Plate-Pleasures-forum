@@ -1,30 +1,30 @@
 import PropTypes from 'prop-types';
 import { useContext, useEffect, useState } from 'react';
 import { AppContext } from '../state/app.context';
-import { dislikeTweet, likeTweet } from '../services/tweets.service';
 import { getUserByHandle } from '../services/users.service'; // Import the function
 import Comments from './Comments';
+import { dislikePost, likePost } from '../services/posts.service';
 
-export default function Tweet({ tweet }) {
+export default function Post({ post }) {
   const { userData } = useContext(AppContext);
   const [authorName, setAuthorName] = useState('');
 
   useEffect(() => {
     const fetchUser = async () => {
-      const user = await getUserByHandle(tweet.author);
-      setAuthorName(user?.name || tweet.author); 
+      const user = await getUserByHandle(post.author);
+      setAuthorName(user?.name || post.author); 
     };
 
     fetchUser();
-  }, [tweet.author]);
+  }, [post.author]);
 
   const toggleLike = async () => {
-    const isLiked = tweet.likedBy.includes(userData.handle);
+    const isLiked = post.likedBy.includes(userData.handle);
     try {
       if (isLiked) {
-        await dislikeTweet(userData.handle, tweet.id);
+        await dislikePost(userData.handle, post.id);
       } else {
-        await likeTweet(userData.handle, tweet.id);
+        await likePost(userData.handle, post.id);
       }
     } catch (error) {
       alert(error.message);
@@ -33,21 +33,21 @@ export default function Tweet({ tweet }) {
 
   return (
     <div>
-      <h3>{tweet.title}</h3>
-      <p>Category: {tweet.category}</p>
-      <p>{tweet.content}</p>
-      <p>Posted By: {authorName} on {new Date(tweet.createdOn).toLocaleDateString()}</p> 
+      <h3>{post.title}</h3>
+      <p>Category: {post.category}</p>
+      <p>{post.content}</p>
+      <p>Posted By: {authorName} on {new Date(post.createdOn).toLocaleDateString()}</p> 
       <button onClick={toggleLike}>
-        {tweet.likedBy.includes(userData?.handle) ? 'Dislike' : 'Like'}
+        {post.likedBy.includes(userData?.handle) ? 'Dislike' : 'Like'}
       </button>
-      <Comments tweetId={tweet.id} />
-      <p>Created on: {new Date(tweet.createdOn).toLocaleDateString()}</p>
+      <Comments postId={post.id} />
+      <p>Created on: {new Date(post.createdOn).toLocaleDateString()}</p>
     </div>
   );
 }
 
-Tweet.propTypes = {
-  tweet: PropTypes.shape({
+Post.propTypes = {
+    post: PropTypes.shape({
     id: PropTypes.string.isRequired,
     author: PropTypes.string.isRequired, 
     title: PropTypes.string.isRequired,
