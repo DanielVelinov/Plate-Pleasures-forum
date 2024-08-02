@@ -1,8 +1,8 @@
 import { ref, push, get, set, update } from 'firebase/database';
 import { db } from '../config/firebase-config';
 
-export const createTweet = async (author, title, content) => {
-  const tweet = { author, title, content, createdOn: new Date().toISOString(), likedBy: {} };
+export const createTweet = async (author, title, content, category) => {
+  const tweet = { author, title, content, category, createdOn: new Date().toISOString(), likedBy: {} };
   const tweetRef = push(ref(db, 'tweets'), tweet);
   const id = tweetRef.key;
   await update(ref(db), {
@@ -52,7 +52,6 @@ export const dislikeTweet = (handle, tweetId) => {
   return update(ref(db), updateObject);
 };
 
-// New function to add a comment
 export const addComment = async (tweetId, content, userHandle) => {
   const comment = { content, userHandle, timestamp: new Date().toISOString() };
   const commentsRef = ref(db, `tweets/${tweetId}/comments`);
@@ -60,7 +59,6 @@ export const addComment = async (tweetId, content, userHandle) => {
   await set(newCommentRef, comment);
 };
 
-// New function to get comments
 export const getComments = async (tweetId) => {
   const commentsRef = ref(db, `tweets/${tweetId}/comments`);
   const snapshot = await get(commentsRef);

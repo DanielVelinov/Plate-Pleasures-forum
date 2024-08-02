@@ -15,7 +15,7 @@ export default function Header() {
 
   return (
     <header>
-      <h1>Forum</h1>
+      <h1>Culinary forum </h1>
       <nav>
         <NavLink to="/">Home</NavLink>
         {user && (<>

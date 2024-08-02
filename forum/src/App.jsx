@@ -4,7 +4,6 @@ import Home from './views/Home'
 import AllTweets from './views/AllTweets';
 import CreateTweet from './views/CreateTweet';
 import Header from './components/Header';
-import Effects from './views/Effects';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import NotFound from './views/NotFound';
 import SingleTweet from './views/SingleTweet';

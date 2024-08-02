@@ -12,7 +12,7 @@ export default function Tweet({ tweet }) {
   useEffect(() => {
     const fetchUser = async () => {
       const user = await getUserByHandle(tweet.author);
-      setAuthorName(user?.name || tweet.author); // Assuming `name` is the field for the user's name
+      setAuthorName(user?.name || tweet.author); 
     };
 
     fetchUser();
@@ -34,8 +34,9 @@ export default function Tweet({ tweet }) {
   return (
     <div>
       <h3>{tweet.title}</h3>
+      <p>Category: {tweet.category}</p>
       <p>{tweet.content}</p>
-      <h2>Posted By: {authorName}</h2> 
+      <p>Posted By: {authorName} on {new Date(tweet.createdOn).toLocaleDateString()}</p> 
       <button onClick={toggleLike}>
         {tweet.likedBy.includes(userData?.handle) ? 'Dislike' : 'Like'}
       </button>
@@ -52,6 +53,7 @@ Tweet.propTypes = {
     title: PropTypes.string.isRequired,
     content: PropTypes.string.isRequired,
     createdOn: PropTypes.string.isRequired,
+    category: PropTypes.string.isRequired,
     likedBy: PropTypes.arrayOf(PropTypes.string),
   }).isRequired
 };

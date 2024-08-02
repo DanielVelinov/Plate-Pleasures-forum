@@ -25,15 +25,14 @@ export default function AllTweets() {
 
   return (
     <div>
-      <h1>Tweets:</h1>
+      <h1>Posts:</h1>
       <label htmlFor="search"></label>
       <input value={search} onChange={e => setSearch(e.target.value)} type="text" name="search" id="search" /><br/><br/>
       {tweets.length > 0
       ? tweets.map(t => (
         <div key={t.id}>
           <h3>{t.title}</h3>
-          <p>{t.content}</p>
-          <button onClick={() => navigate(`/tweets/${t.id}`)}>See more</button>
+          <p>{t.content} <button onClick={() => navigate(`/tweets/${t.id}`)}>See more</button></p>
           <Comments tweetId={t.id} limit={3} />
         </div>
       ))
