@@ -5,9 +5,10 @@ import { getUserByHandle } from '../services/users.service';
 import Comments from './Comments';
 import { dislikePost, likePost, deletePost } from '../services/posts.service';
 
-export default function Post({ post, onDelete }) { // Accept onDelete prop
+export default function Post({ post, onDelete }) {
   const { userData } = useContext(AppContext);
   const [authorName, setAuthorName] = useState('');
+  const [isExpanded, setIsExpanded] = useState(false);
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -28,7 +29,7 @@ export default function Post({ post, onDelete }) { // Accept onDelete prop
       return;
     }
 
-    const isLiked = (post.likedBy || []).includes(userData.handle); // Ensure likedBy is always an array
+    const isLiked = Array.isArray(post.likedBy) && post.likedBy.includes(userData.handle);
 
     try {
       if (isLiked) {
@@ -47,7 +48,7 @@ export default function Post({ post, onDelete }) { // Accept onDelete prop
       try {
         await deletePost(post.id);
         if (onDelete) {
-          onDelete(post.id); // Call onDelete callback if provided
+          onDelete(post.id);
         }
       } catch (error) {
         console.error('Failed to delete post:', error);
@@ -56,21 +57,31 @@ export default function Post({ post, onDelete }) { // Accept onDelete prop
     }
   };
 
+  const toggleExpanded = () => {
+    setIsExpanded(!isExpanded);
+  };
+
   const formattedDate = new Date(post.createdOn).toLocaleDateString();
+  const snippet = post.content.length > 100 ? `${post.content.substring(0, 100)}...` : post.content;
 
   return (
     <div>
       <h3>{post.title}</h3>
       <p>Category: {post.category}</p>
-      <p>{post.content}</p>
+      <p>{isExpanded ? post.content : snippet}</p>
+      {post.content.length > 100 && (
+        <button onClick={toggleExpanded}>
+          {isExpanded ? 'See Less' : 'See More'}
+        </button>
+      )}
       <p>Posted By: {authorName} on {formattedDate}</p>
       <button onClick={toggleLike}>
-        {(post.likedBy || []).includes(userData?.handle) ? 'Dislike' : 'Like'} {/* Ensure likedBy is an array */}
+        {Array.isArray(post.likedBy) && post.likedBy.includes(userData?.handle) ? 'Dislike' : 'Like'}
       </button>
-      {userData?.handle === post.author && ( // Show delete button only for post author
+      {userData?.handle === post.author && (
         <button onClick={handleDelete}>Delete</button>
       )}
-      <Comments postId={post.id} />
+      <Comments postId={post.id} postAuthor={post.author} />
       <p>Created on: {formattedDate}</p>
     </div>
   );
@@ -84,7 +95,7 @@ Post.propTypes = {
     content: PropTypes.string.isRequired,
     createdOn: PropTypes.string.isRequired,
     category: PropTypes.string.isRequired,
-    likedBy: PropTypes.arrayOf(PropTypes.string), // Ensure likedBy is an array
+    likedBy: PropTypes.arrayOf(PropTypes.string), 
   }).isRequired,
-  onDelete: PropTypes.func, // Optional onDelete prop
+  onDelete: PropTypes.func,
 };

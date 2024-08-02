@@ -1,5 +1,17 @@
-import { ref as dbRef, push, get, set, update, remove } from 'firebase/database'; // Use dbRef to avoid conflicts
+import { ref as dbRef, push, get, set, update, remove } from 'firebase/database';
 import { db } from '../config/firebase-config';
+
+
+
+export const deleteComment = async (postId, commentId) => {
+  try {
+    await remove(dbRef(db, `posts/${postId}/comments/${commentId}`));
+    console.log('Comment deleted successfully:', commentId);
+  } catch (error) {
+    console.error('Error deleting comment:', error);
+    throw new Error('Failed to delete comment.');
+  }
+};
 
 export const createPost = async (author, title, content, category) => {
   const post = {
@@ -28,7 +40,11 @@ export const getAllPosts = async (search = '') => {
     const snapshot = await get(dbRef(db, 'posts'));
     if (!snapshot.exists()) return [];
 
-    const posts = Object.values(snapshot.val());
+    const posts = Object.values(snapshot.val()).map(post => ({
+      ...post,
+      likedBy: post.likedBy ? Object.keys(post.likedBy) : [], 
+    }));
+
     console.log('Fetched posts:', posts);
 
     if (search) {
@@ -42,6 +58,9 @@ export const getAllPosts = async (search = '') => {
   }
 };
 
+
+
+
 export const getPostById = async (id) => {
   try {
     const snapshot = await get(dbRef(db, `posts/${id}`));
@@ -50,13 +69,15 @@ export const getPostById = async (id) => {
     }
 
     const post = snapshot.val();
-    post.likedBy = Object.keys(post.likedBy ?? {}); // Ensure likedBy is always an array
+    post.likedBy = post.likedBy ? Object.keys(post.likedBy) : []; 
     return post;
   } catch (error) {
     console.error('Error fetching post by ID:', error);
     throw new Error('Unable to fetch post.');
   }
 };
+
+
 
 
 export const likePost = async (handle, postId) => {

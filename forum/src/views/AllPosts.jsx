@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { getAllPosts } from "../services/posts.service";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import Comments from '../components/Comments';
 import Post from '../components/Post'; // Import Post component
 
 export default function AllPosts() {
@@ -16,7 +15,11 @@ export default function AllPosts() {
       setLoading(true);
       try {
         const postsData = await getAllPosts(search);
-        setPosts(postsData);
+        const transformedPosts = postsData.map(post => ({
+          ...post,
+          likedBy: Array.isArray(post.likedBy) ? post.likedBy : Object.keys(post.likedBy ?? {}) 
+        }));
+        setPosts(transformedPosts);
       } catch (error) {
         console.error('Failed to fetch posts:', error);
         alert('Failed to fetch posts. Please try again.');
@@ -35,7 +38,7 @@ export default function AllPosts() {
   };
 
   const handleDelete = (postId) => {
-    setPosts(posts.filter(post => post.id !== postId)); // Remove post from state
+    setPosts(posts.filter(post => post.id !== postId)); 
   };
 
   return (
@@ -47,10 +50,7 @@ export default function AllPosts() {
         <p>Loading posts...</p>
       ) : posts.length > 0 ? (
         posts.map(t => (
-          <div key={t.id}>
-            <Post post={t} onDelete={handleDelete} />
-            <Comments postId={t.id} limit={3} />
-          </div>
+          <Post key={t.id} post={t} onDelete={handleDelete} />
         ))
       ) : (
         'No posts found'
