@@ -46,7 +46,6 @@ function App() {
           <Route path='/tweets' element={<Authenticated><AllTweets /></Authenticated>} />
           <Route path='/tweets/:id' element={<Authenticated><SingleTweet /></Authenticated>} />
           <Route path='/tweets-create' element={<Authenticated><CreateTweet /></Authenticated>} />
-          <Route path='/effects' element={<Authenticated><Effects /></Authenticated>} />
           <Route path='/login' element={<Login />} />
           <Route path='/register' element={<Register />} />
           <Route path='*' element={<NotFound />} />

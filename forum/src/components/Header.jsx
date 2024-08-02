@@ -21,7 +21,6 @@ export default function Header() {
         {user && (<>
           <NavLink to="/tweets">All posts</NavLink>
           <NavLink to="/tweets-create">Create post</NavLink>
-          <NavLink to="/effects">Test effects</NavLink>
         </>)}
         {!user && <NavLink to="/login">Login</NavLink>}
         {!user && <NavLink to="/register">Register</NavLink>}

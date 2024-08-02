@@ -1,22 +1,23 @@
-import PropType from 'prop-types';
-import { useContext } from 'react';
+import PropTypes from 'prop-types';
+import { useContext, useEffect, useState } from 'react';
 import { AppContext } from '../state/app.context';
 import { dislikeTweet, likeTweet } from '../services/tweets.service';
+import { getUserByHandle } from '../services/users.service'; // Import the function
+import Comments from './Comments';
 
-/**
- * 
- * @param {{ tweet: {
- *  id: string,
- *  author: string,
- *  title: string,
- *  content: string,
- *  createdOn: string,
- *  likedBy?: string[]
- * } }} props 
- * @returns 
- */
 export default function Tweet({ tweet }) {
   const { userData } = useContext(AppContext);
+  const [authorName, setAuthorName] = useState('');
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      const user = await getUserByHandle(tweet.author);
+      setAuthorName(user?.name || tweet.author); // Assuming `name` is the field for the user's name
+    };
+
+    fetchUser();
+  }, [tweet.author]);
+
   const toggleLike = async () => {
     const isLiked = tweet.likedBy.includes(userData.handle);
     try {
@@ -34,19 +35,23 @@ export default function Tweet({ tweet }) {
     <div>
       <h3>{tweet.title}</h3>
       <p>{tweet.content}</p>
+      <h2>Posted By: {authorName}</h2> 
+      <button onClick={toggleLike}>
+        {tweet.likedBy.includes(userData?.handle) ? 'Dislike' : 'Like'}
+      </button>
+      <Comments tweetId={tweet.id} />
       <p>Created on: {new Date(tweet.createdOn).toLocaleDateString()}</p>
-      <button onClick={toggleLike}>{tweet.likedBy.includes(userData?.handle) ? 'Dislike' : 'Like'}</button>
     </div>
-  )
+  );
 }
 
 Tweet.propTypes = {
-  tweet: PropType.shape({
-    id: PropType.string,
-    author: PropType.string,
-    title: PropType.string,
-    content: PropType.string,
-    createdOn: PropType.string,
-    likedBy: PropType.arrayOf(PropType.string),
-  })
-}
+  tweet: PropTypes.shape({
+    id: PropTypes.string.isRequired,
+    author: PropTypes.string.isRequired, 
+    title: PropTypes.string.isRequired,
+    content: PropTypes.string.isRequired,
+    createdOn: PropTypes.string.isRequired,
+    likedBy: PropTypes.arrayOf(PropTypes.string),
+  }).isRequired
+};

@@ -15,3 +15,7 @@ export const getUserData = async (uid) => {
   const snapshot = await get(query(ref(db, 'users'), orderByChild('uid'), equalTo(uid)));
   return snapshot.val();
 };
+export const getUserNameByHandle = async (handle) => {
+  const user = await getUserByHandle(handle);
+  return user?.name || handle; // Assuming `name` is the field for the user's name
+};

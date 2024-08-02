@@ -1,10 +1,10 @@
-import { ref, push, get, set, update, query, equalTo, orderByChild, orderByKey } from 'firebase/database';
-import { db } from '../config/firebase-config'
+import { ref, push, get, set, update } from 'firebase/database';
+import { db } from '../config/firebase-config';
 
 export const createTweet = async (author, title, content) => {
-  const tweet = { author, title, content, createdOn: new Date().toString() };
-  const result = await push(ref(db, 'tweets'), tweet);
-  const id = result.key;
+  const tweet = { author, title, content, createdOn: new Date().toISOString(), likedBy: {} };
+  const tweetRef = push(ref(db, 'tweets'), tweet);
+  const id = tweetRef.key;
   await update(ref(db), {
     [`tweets/${id}/id`]: id,
   });
@@ -29,10 +29,9 @@ export const getTweetById = async (id) => {
     throw new Error('Tweet not found!');
   }
 
-  return {
-    ...snapshot.val(),
-    likedBy: Object.keys(snapshot.val().likedBy ?? {}),
-  };
+  const tweet = snapshot.val();
+  tweet.likedBy = Object.keys(tweet.likedBy ?? {});
+  return tweet;
 };
 
 export const likeTweet = (handle, tweetId) => {
@@ -53,6 +52,26 @@ export const dislikeTweet = (handle, tweetId) => {
   return update(ref(db), updateObject);
 };
 
+// New function to add a comment
+export const addComment = async (tweetId, content, userHandle) => {
+  const comment = { content, userHandle, timestamp: new Date().toISOString() };
+  const commentsRef = ref(db, `tweets/${tweetId}/comments`);
+  const newCommentRef = push(commentsRef);
+  await set(newCommentRef, comment);
+};
+
+// New function to get comments
+export const getComments = async (tweetId) => {
+  const commentsRef = ref(db, `tweets/${tweetId}/comments`);
+  const snapshot = await get(commentsRef);
+  if (!snapshot.exists()) return [];
+
+  const comments = snapshot.val();
+  return Object.keys(comments).map(key => ({
+    id: key,
+    ...comments[key],
+  }));
+};
 // export const createTweet = async (title, content) => {
 //   const response = await fetch('http://127.0.0.1:3000/tweets', {
 //     method: 'POST',
