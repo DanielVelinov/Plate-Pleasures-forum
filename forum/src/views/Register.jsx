@@ -6,7 +6,7 @@ import { createUserHandle, getUserByHandle } from "../services/users.service";
 
 export default function Register() {
   const [user, setUser] = useState({
-    handle: '',
+    firstName: '',
     lastName: '',
     email: '',
     password: '',
@@ -23,28 +23,31 @@ export default function Register() {
 
   const register = async () => {
     if (!user.email || !user.password) {
-      return alert('No credentials provided!');
+      alert('No credentials provided!');
+      return;
     }
 
     try {
-      const userFromDB = await getUserByHandle(user.handle);
+      const userFromDB = await getUserByHandle(user.firstName);
       if (userFromDB) {
-        return alert(`User {${user.handle}} already exists!`);
+        alert(`User {${user.firstName}} already exists!`);
+        return;
       }
       const credential = await registerUser(user.email, user.password);
-      await createUserHandle(user.handle, credential.user.uid, user.handle);
+      await createUserHandle(user.firstName, credential.user.uid, user.email);
       setAppState({ user: credential.user, userData: null });
       navigate('/');
     } catch (error) {
-      alert(error.message);
+      console.error('Registration failed:', error);
+      alert('Failed to register. Please try again.');
     }
   };
 
   return (
     <>
       <h1>Register</h1>
-      <label htmlFor="handle">First Name: </label>
-      <input value={user.handle} onChange={updateUser('handle')} type="text" name="handle" id="handle" /><br /><br />
+      <label htmlFor="firstName">First Name: </label>
+      <input value={user.firstName} onChange={updateUser('firstName')} type="text" name="firstName" id="firstName" /><br /><br />
       <label htmlFor="lastName">Last Name: </label>
       <input value={user.lastName} onChange={updateUser('lastName')} type="text" name="lastName" id="lastName" /><br /><br />
       <label htmlFor="email">Email: </label>

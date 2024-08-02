@@ -1,15 +1,20 @@
-import { ref, push, get, set, update } from 'firebase/database';
+import { ref as dbRef, push, get, set, update, remove } from 'firebase/database'; // Use dbRef to avoid conflicts
 import { db } from '../config/firebase-config';
 
 export const createPost = async (author, title, content, category) => {
-  const post = { 
-    author,title, content, category, createdOn: new Date().toISOString(), likedBy: {} 
+  const post = {
+    author,
+    title,
+    content,
+    category,
+    createdOn: new Date().toISOString(),
+    likedBy: {}
   };
 
   try {
-    const postRef = await push(ref(db, 'posts'), post);
-    const id = postRef.key; 
-    await update(ref(db, `posts/${id}`), { id });
+    const postRef = await push(dbRef(db, 'posts'), post);
+    const id = postRef.key;
+    await update(dbRef(db, `posts/${id}`), { id });
 
     console.log('Post created successfully:', id);
   } catch (error) {
@@ -20,14 +25,13 @@ export const createPost = async (author, title, content, category) => {
 
 export const getAllPosts = async (search = '') => {
   try {
-    const snapshot = await get(ref(db, 'posts'));
-    if (!snapshot.exists()) return []; 
+    const snapshot = await get(dbRef(db, 'posts'));
+    if (!snapshot.exists()) return [];
 
     const posts = Object.values(snapshot.val());
-    console.log('Fetched posts:', posts); 
+    console.log('Fetched posts:', posts);
 
     if (search) {
-      
       return posts.filter(post => post.title.toLowerCase().includes(search.toLowerCase()));
     }
 
@@ -38,54 +42,92 @@ export const getAllPosts = async (search = '') => {
   }
 };
 
-
 export const getPostById = async (id) => {
-  const snapshot = await get(ref(db, `posts/${id}`));
-  if (!snapshot.exists()) {
-    throw new Error('Post not found!');
-  }
+  try {
+    const snapshot = await get(dbRef(db, `posts/${id}`));
+    if (!snapshot.exists()) {
+      throw new Error('Post not found!');
+    }
 
-  const post = snapshot.val();
-  post.likedBy = Object.keys(post.likedBy ?? {});
-  return post;
+    const post = snapshot.val();
+    post.likedBy = Object.keys(post.likedBy ?? {}); // Ensure likedBy is always an array
+    return post;
+  } catch (error) {
+    console.error('Error fetching post by ID:', error);
+    throw new Error('Unable to fetch post.');
+  }
 };
 
-export const likePost = (handle, postId) => {
+
+export const likePost = async (handle, postId) => {
   const updateObject = {
     [`posts/${postId}/likedBy/${handle}`]: true,
     [`users/${handle}/likedPosts/${postId}`]: true,
   };
 
-  return update(ref(db), updateObject);
+  try {
+    await update(dbRef(db), updateObject);
+  } catch (error) {
+    console.error('Error liking post:', error);
+    throw new Error('Unable to like post.');
+  }
 };
 
-export const dislikePost = (handle, postId) => {
+export const dislikePost = async (handle, postId) => {
   const updateObject = {
     [`posts/${postId}/likedBy/${handle}`]: null,
     [`users/${handle}/likedPosts/${postId}`]: null,
   };
 
-  return update(ref(db), updateObject);
+  try {
+    await update(dbRef(db), updateObject);
+  } catch (error) {
+    console.error('Error disliking post:', error);
+    throw new Error('Unable to dislike post.');
+  }
 };
 
 export const addComment = async (postId, content, userHandle) => {
   const comment = { content, userHandle, timestamp: new Date().toISOString() };
-  const commentsRef = ref(db, `posts/${postId}/comments`);
+  const commentsRef = dbRef(db, `posts/${postId}/comments`);
   const newCommentRef = push(commentsRef);
-  await set(newCommentRef, comment);
+
+  try {
+    await set(newCommentRef, comment);
+  } catch (error) {
+    console.error('Error adding comment:', error);
+    throw new Error('Unable to add comment.');
+  }
 };
 
 export const getComments = async (postId) => {
-  const commentsRef = ref(db, `posts/${postId}/comments`);
-  const snapshot = await get(commentsRef);
-  if (!snapshot.exists()) return [];
+  const commentsRef = dbRef(db, `posts/${postId}/comments`);
 
-  const comments = snapshot.val();
-  return Object.keys(comments).map(key => ({
-    id: key,
-    ...comments[key],
-  }));
+  try {
+    const snapshot = await get(commentsRef);
+    if (!snapshot.exists()) return [];
+
+    const comments = snapshot.val();
+    return Object.keys(comments).map(key => ({
+      id: key,
+      ...comments[key],
+    }));
+  } catch (error) {
+    console.error('Error fetching comments:', error);
+    throw new Error('Unable to fetch comments.');
+  }
 };
+
+export const deletePost = async (postId) => {
+  try {
+    await remove(dbRef(db, `posts/${postId}`));
+    console.log('Post deleted successfully:', postId);
+  } catch (error) {
+    console.error('Error deleting post:', error);
+    throw new Error('Failed to delete post.');
+  }
+};
+
 // export const createPost = async (title, content) => {
 //   const response = await fetch('http://127.0.0.1:3000/posts', {
 //     method: 'POST',

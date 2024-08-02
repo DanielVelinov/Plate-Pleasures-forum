@@ -1,6 +1,6 @@
-import { useContext, useEffect, useState } from 'react'
-import './App.css'
-import Home from './views/Home'
+import { useEffect, useState } from 'react';
+import './App.css';
+import Home from './views/Home';
 import AllPosts from './views/AllPosts';
 import CreatePost from './views/CreatePost';
 import Header from './components/Header';
@@ -22,18 +22,26 @@ function App() {
   });
   const [user, loading, error] = useAuthState(auth);
 
-  if (appState.user !== user) {
-    setAppState({...appState, user });
-  }
+  useEffect(() => {
+    if (appState.user !== user) {
+      setAppState((prevState) => ({ ...prevState, user }));
+    }
+  }, [user]);
 
   useEffect(() => {
     if (!user) return;
 
-    getUserData(appState.user.uid)
-      .then(data => {
+    const fetchUserData = async () => {
+      try {
+        const data = await getUserData(user.uid);
         const userData = data[Object.keys(data)[0]];
-        setAppState({...appState, userData});
-      });
+        setAppState((prevState) => ({ ...prevState, userData }));
+      } catch (error) {
+        console.error('Failed to fetch user data:', error);
+      }
+    };
+
+    fetchUserData();
   }, [user]);
 
   return (
@@ -49,10 +57,14 @@ function App() {
           <Route path='/register' element={<Register />} />
           <Route path='*' element={<NotFound />} />
         </Routes>
-        <footer>&copy;2024</footer>
+        <Footer />
       </AppContext.Provider>
     </BrowserRouter>
-  )
+  );
 }
 
-export default App
+function Footer() {
+  return <footer>&copy;2024</footer>;
+}
+
+export default App;

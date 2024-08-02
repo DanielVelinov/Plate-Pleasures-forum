@@ -1,9 +1,8 @@
 import { useContext, useState } from "react";
-import { createPost as apiCreatePost } from "../services/posts.service"; // Use alias to avoid conflict
+import { createPost as apiCreatePost } from "../services/posts.service";
 import { AppContext } from '../state/app.context';
 
-// Renaming the function to avoid naming conflict
-export default function CreatePostComponent() { 
+export default function CreatePostComponent() {
   const [post, setPost] = useState({
     title: '',
     content: '',
@@ -19,22 +18,31 @@ export default function CreatePostComponent() {
   };
 
   const handleCreatePost = async () => {
-    if (post.title.length < 3) {
-      return alert('Title too short!');
+    if (!userData) {
+      alert('You must be logged in to create a post.');
+      return;
     }
-    if (post.content.length < 3) {
-      return alert('Content too short!');
+
+    if (post.title.trim().length < 3) {
+      alert('Title too short!');
+      return;
+    }
+    if (post.content.trim().length < 3) {
+      alert('Content too short!');
+      return;
     }
     if (post.category === '') {
-      return alert('Please select a category!');
+      alert('Please select a category!');
+      return;
     }
 
     try {
-      // Using the imported function with an alias to avoid conflict
       await apiCreatePost(userData.handle, post.title, post.content, post.category);
       setPost({ title: '', content: '', category: '' });
+      alert('Post created successfully!');
     } catch (error) {
-      alert(error.message);
+      console.error('Failed to create post:', error);
+      alert('Failed to create post. Please try again.');
     }
   };
 
@@ -42,9 +50,9 @@ export default function CreatePostComponent() {
     <div>
       <h1>Create post</h1>
       <label htmlFor="title">Title: </label>
-      <input value={post.title} onChange={e => updatePost('title', e.target.value)} type="text" name="title" id="title" /><br/>
+      <input value={post.title} onChange={e => updatePost('title', e.target.value)} type="text" name="title" id="title" /><br />
       <label htmlFor="content">Content: </label>
-      <textarea value={post.content} onChange={e => updatePost('content', e.target.value)} name="content" id="content" /><br/>
+      <textarea value={post.content} onChange={e => updatePost('content', e.target.value)} name="content" id="content" /><br />
       <label htmlFor="category">Category: </label>
       <select value={post.category} onChange={e => updatePost('category', e.target.value)} name="category" id="category">
         <option value="">Select a category</option>
@@ -52,8 +60,8 @@ export default function CreatePostComponent() {
         <option value="Salads">Salads</option>
         <option value="Main courses">Main courses</option>
         <option value="Vegetarian">Vegetarian</option>
-      </select><br/><br/>
+      </select><br /><br />
       <button onClick={handleCreatePost}>Create</button>
     </div>
   );
-} 
+}

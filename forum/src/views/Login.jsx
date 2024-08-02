@@ -2,6 +2,7 @@ import { useContext, useState } from "react";
 import { AppContext } from "../state/app.context";
 import { useLocation, useNavigate } from "react-router-dom";
 import { loginUser } from "../services/auth.service";
+import { getUserData } from "../services/users.service";
 
 export default function Login() {
   const [user, setUser] = useState({
@@ -21,23 +22,20 @@ export default function Login() {
 
   const login = async () => {
     if (!user.email || !user.password) {
-      return alert('No credentials provided!');
+      alert('No credentials provided!');
+      return;
     }
 
     try {
       const credentials = await loginUser(user.email, user.password);
-
-      // Log the credentials for debugging purposes
-      console.log('User credentials:', credentials);
-
+      const userData = await getUserData(credentials.user.uid);
       setAppState({
-        user: credentials.user, // Ensure you get the correct user object
-        userData: null,
+        user: credentials.user,
+        userData: userData[Object.keys(userData)[0]],
       });
-
       navigate(location.state?.from.pathname ?? '/');
     } catch (error) {
-      console.error('Login failed:', error); // Log the error
+      console.error('Login failed:', error);
       alert(`Login failed: ${error.message}`);
     }
   };
