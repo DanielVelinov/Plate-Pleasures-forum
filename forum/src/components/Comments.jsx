@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import PropTypes from 'prop-types';
 import { getComments, addComment } from '../services/posts.service';
-import { getUserNameByHandle } from '../services/users.service'; // Import the function
+import { getUserNameByHandle } from '../services/users.service';
 import { AppContext } from '../state/app.context';
 
 const Comments = ({ postId, limit = 3 }) => {
@@ -11,44 +11,48 @@ const Comments = ({ postId, limit = 3 }) => {
   const [userNames, setUserNames] = useState({});
   const { userData } = useContext(AppContext);
 
-  useEffect(() => {
-    const fetchComments = async () => {
-      const commentsData = await getComments(postId);
-      setComments(commentsData);
-      
-      // Fetch user names for the comments
-      const handles = commentsData.map(comment => comment.userHandle);
-      const uniqueHandles = [...new Set(handles)];
-      const names = {};
-      
+  const fetchUserNames = async (commentsData) => {
+    const handles = commentsData.map(comment => comment.userHandle);
+    const uniqueHandles = [...new Set(handles)];
+    const names = {};
+
+    try {
       await Promise.all(uniqueHandles.map(async (handle) => {
         const name = await getUserNameByHandle(handle);
         names[handle] = name;
       }));
-      
-      setUserNames(names);
+    } catch (error) {
+      console.error('Failed to fetch user names:', error);
+    }
+
+    setUserNames(names);
+  };
+
+  useEffect(() => {
+    const fetchComments = async () => {
+      try {
+        const commentsData = await getComments(postId);
+        setComments(commentsData);
+        await fetchUserNames(commentsData);
+      } catch (error) {
+        console.error('Failed to fetch comments:', error);
+      }
     };
 
     fetchComments();
   }, [postId]);
 
   const handleAddComment = async () => {
-    if (newComment.trim()) {
-      await addComment(postId, newComment, userData.handle);
-      setNewComment('');
-      const commentsData = await getComments(postId);
-      setComments(commentsData);
-      
-      const handles = commentsData.map(comment => comment.userHandle);
-      const uniqueHandles = [...new Set(handles)];
-      const names = {};
-      
-      await Promise.all(uniqueHandles.map(async (handle) => {
-        const name = await getUserNameByHandle(handle);
-        names[handle] = name;
-      }));
-      
-      setUserNames(names);
+    if (newComment.trim() && userData?.handle) {
+      try {
+        await addComment(postId, newComment, userData.handle);
+        setNewComment('');
+        const commentsData = await getComments(postId);
+        setComments(commentsData);
+        await fetchUserNames(commentsData);
+      } catch (error) {
+        console.error('Failed to add comment:', error);
+      }
     }
   };
 

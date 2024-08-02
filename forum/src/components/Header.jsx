@@ -8,14 +8,19 @@ export default function Header() {
   const navigate = useNavigate();
 
   const logout = async () => {
-    await logoutUser();
-    setAppState({ user: null, userData: null });
-    navigate('/login');
+    try {
+      await logoutUser();
+      setAppState({ user: null, userData: null });
+      navigate('/login');
+    } catch (error) {
+      console.error('Failed to logout:', error);
+      alert('Failed to logout. Please try again.');
+    }
   };
 
   return (
     <header>
-      <h1>Culinary forum </h1>
+      <h1>Culinary Forum</h1>
       <nav>
         <NavLink to="/">Home</NavLink>
         {user && (<>

@@ -11,13 +11,9 @@ export default function Authenticated({ children }) {
     return <Navigate replace to="/login" state={{ from: location }} />
   }
 
-  return (
-    <>
-      {children}
-    </>
-  )
+  return children;
 }
 
 Authenticated.propTypes = {
-  children: PropTypes.any,
+  children: PropTypes.node.isRequired,
 };

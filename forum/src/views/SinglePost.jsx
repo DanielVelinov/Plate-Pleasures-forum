@@ -1,34 +1,38 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom"
-import { getPostById } from "../services/posts.service";
+import { useParams, useNavigate } from "react-router-dom";
 import Post from "../components/Post";
 import { onValue, ref } from "firebase/database";
 import { db } from "../config/firebase-config";
 
 export default function SinglePost() {
   const [post, setPost] = useState(null);
+  const navigate = useNavigate();
   const { id } = useParams();
 
-  // useEffect(() => {
-  //   getPostById(id)
-  //     .then(post => setPost(post))
-  //     .catch(e => alert(e.message));
-  // }, [id]);
-
   useEffect(() => {
-    return onValue(ref(db, `posts/${id}`), snapshot => {
+    const postRef = ref(db, `posts/${id}`);
+    const unsubscribe = onValue(postRef, snapshot => {
       const updatedPost = snapshot.val();
       setPost({
         ...updatedPost,
         likedBy: Object.keys(updatedPost.likedBy ?? {}),
       });
     });
+
+    return () => {
+      // Cleanup the listener
+      unsubscribe();
+    };
   }, [id]);
+
+  const handleDelete = () => {
+    navigate('/posts'); // Redirect to posts page after deletion
+  };
 
   return (
     <div>
       <h1>Single post</h1>
-      { post && <Post post={post}/> }
+      {post ? <Post post={post} onDelete={handleDelete} /> : <p>Loading...</p>}
     </div>
-  )
+  );
 }
