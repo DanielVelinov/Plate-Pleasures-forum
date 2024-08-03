@@ -5,6 +5,9 @@ import { useNavigate } from "react-router-dom";
 import { createUserHandle, getUserByHandle } from "../services/users.service";
 
 export default function Register() {
+  const minNameLength = 4;
+  const maxNameLength = 32;
+
   const [user, setUser] = useState({
     firstName: '',
     lastName: '',
@@ -26,21 +29,25 @@ export default function Register() {
       alert('No credentials provided!');
       return;
     }
-
-    try {
-      const userFromDB = await getUserByHandle(user.firstName);
-      if (userFromDB) {
-        alert(`User {${user.firstName}} already exists!`);
-        return;
-      }
-      const credential = await registerUser(user.email, user.password);
-      await createUserHandle(user.firstName, credential.user.uid, user.email);
-      setAppState({ user: credential.user, userData: null });
-      navigate('/');
-    } catch (error) {
-      console.error('Registration failed:', error);
-      alert('Failed to register. Please try again.');
+    if (user.firstName.length < minNameLength || user.firstName.length > maxNameLength 
+      || user.lastName.length < minNameLength || user.lastName.length > maxNameLength){
+      alert('First and last names must be between 4 and 32 symbols')
+      return;
     }
+      try {
+        const userFromDB = await getUserByHandle(user.firstName);
+        if (userFromDB) {
+          alert(`User {${user.firstName}} already exists!`);
+          return;
+        }
+        const credential = await registerUser(user.email, user.password);
+        await createUserHandle(user.firstName, credential.user.uid, user.email);
+        setAppState({ user: credential.user, userData: null });
+        navigate('/');
+      } catch (error) {
+        console.error('Registration failed:', error);
+        alert('Failed to register. Please try again.');
+      }
   };
 
   return (
