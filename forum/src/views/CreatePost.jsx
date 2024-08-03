@@ -3,6 +3,11 @@ import { createPost as apiCreatePost } from "../services/posts.service";
 import { AppContext } from '../state/app.context';
 
 export default function CreatePostComponent() {
+  const titleMinLength = 16;
+  const titleMaxLength = 64;
+  const contentMinLength = 32;
+  const contentMaxLength = 8192;
+
   const [post, setPost] = useState({
     title: '',
     content: '',
@@ -23,11 +28,11 @@ export default function CreatePostComponent() {
       return;
     }
 
-    if (post.title.trim().length < 3) {
-      alert('Title too short!');
+    if (post.title.trim().length < titleMinLength || post.title.trim().length > titleMaxLength) {
+      alert('The title must be between 16 and 64 symbols');
       return;
     }
-    if (post.content.trim().length < 3) {
+    if (post.content.trim().length < contentMinLength || post.content.trim().length > contentMaxLength) {
       alert('Content too short!');
       return;
     }
