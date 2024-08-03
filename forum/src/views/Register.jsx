@@ -1,8 +1,8 @@
-import { useContext, useState } from "react"
+import { useContext, useState } from "react";
 import { registerUser } from "../services/auth.service";
 import { AppContext } from "../state/app.context";
 import { useNavigate } from "react-router-dom";
-import { createUserHandle, getUserByHandle } from "../services/users.service";
+import { createUserHandle, getUserByHandle, saveUserDetails } from "../services/users.service";
 
 export default function Register() {
   const minNameLength = 4;
@@ -34,20 +34,29 @@ export default function Register() {
       alert('First and last names must be between 4 and 32 symbols')
       return;
     }
-      try {
-        const userFromDB = await getUserByHandle(user.firstName);
-        if (userFromDB) {
-          alert(`User {${user.firstName}} already exists!`);
-          return;
-        }
-        const credential = await registerUser(user.email, user.password);
-        await createUserHandle(user.firstName, credential.user.uid, user.email);
-        setAppState({ user: credential.user, userData: null });
-        navigate('/');
-      } catch (error) {
-        console.error('Registration failed:', error);
-        alert('Failed to register. Please try again.');
+    try {
+      const userFromDB = await getUserByHandle(user.firstName);
+      if (userFromDB) {
+        alert(`User {${user.firstName}} already exists!`);
+        return;
       }
+      const credential = await registerUser(user.email, user.password);
+      await createUserHandle(user.firstName, credential.user.uid, user.email);
+      
+      // Save additional user details to the database
+      await saveUserDetails({
+        uid: credential.user.uid,
+        email: user.email,
+        firstName: user.firstName,
+        lastName: user.lastName
+      });
+      
+      setAppState({ user: credential.user, userData: null });
+      navigate('/');
+    } catch (error) {
+      console.error('Registration failed:', error);
+      alert('Failed to register. Please try again.');
+    }
   };
 
   return (

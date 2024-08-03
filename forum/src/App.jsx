@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
-import './App.css';
+import './index.css';          // Global styles
+import './App.css';            // Component-specific styles
+import './styles/styles.css';  // Main CSS file for additional styling
 import Home from './views/Home';
 import AllPosts from './views/AllPosts';
 import CreatePost from './views/CreatePost';
@@ -64,7 +66,7 @@ function App() {
 }
 
 function Footer() {
-  return <footer>&copy;2024</footer>;
+  return <footer>&copy; 2024 Culinary Forum. All rights reserved.</footer>;
 }
 
 export default App;

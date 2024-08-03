@@ -40,3 +40,30 @@ export const getUserNameByHandle = async (handle) => {
     throw new Error('Unable to fetch user name.');
   }
 };
+
+// New function to save user details
+export const saveUserDetails = async ({ uid, email, firstName, lastName, phoneNumber = null }) => {
+  try {
+    await set(ref(db, `users/${uid}`), {
+      email,
+      firstName,
+      lastName,
+      phoneNumber,
+      createdOn: new Date().toISOString()
+    });
+  } catch (error) {
+    console.error('Error saving user details:', error);
+    throw new Error('Unable to save user details.');
+  }
+};
+
+// New function to get all users
+export const getAllUsers = async () => {
+  try {
+    const snapshot = await get(ref(db, 'users'));
+    return snapshot.val();
+  } catch (error) {
+    console.error('Error fetching all users:', error);
+    throw new Error('Unable to fetch users.');
+  }
+};
