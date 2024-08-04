@@ -24,6 +24,7 @@ export default function Header() {
       <h1>Culinary Forum</h1>
       <nav>
         <NavLink to="/">Home</NavLink>
+
         {user && (
           <>
             <NavLink to="/posts">All posts</NavLink>
@@ -36,7 +37,10 @@ export default function Header() {
         {!user && <NavLink to="/register">Register</NavLink>}
         {user && <button onClick={logout}>Logout</button>}
         {userData && <span>Welcome, {userData.handle}</span>}
+
+
       </nav>
     </header>
   );
 }
+

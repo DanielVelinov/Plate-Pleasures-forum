@@ -25,6 +25,7 @@ export const getAllPosts = async (search = '') => {
   }
 };
 
+
 export const createPost = async (author, title, content, category, tags = []) => {
   const post = {
     author,

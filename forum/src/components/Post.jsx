@@ -96,7 +96,7 @@ export default function Post({ post, onDelete }) {
           <button onClick={toggleEdit}>{isEditing ? 'Cancel' : 'Edit'}</button>
         </>
       )}
-      {isEditing && <EditPost post={post} onSave={handleSave} />}  
+      {isEditing && <EditPost post={post} onSave={handleSave} />}  // Render the EditPost component if editing
       <Comments postId={post.id} postAuthor={post.author} />
       <p>Created on: {formattedDate}</p>
     </div>

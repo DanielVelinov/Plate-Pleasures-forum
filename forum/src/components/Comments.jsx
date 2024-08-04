@@ -1,8 +1,8 @@
 
 import React, { useState, useEffect, useContext } from 'react';
 import PropTypes from 'prop-types';
-import { getComments, addComment, deleteComment } from '../services/posts.service'; 
-import { getUserNameByHandle } from '../services/users.service';
+import { getComments, addComment, deleteComment } from '../services/posts.service';
+import { getUserNameByHandle } from '../services/users.service'; 
 import { AppContext } from '../state/app.context';
 
 const Comments = ({ postId, limit = 3, postAuthor }) => {
@@ -18,9 +18,10 @@ const Comments = ({ postId, limit = 3, postAuthor }) => {
         const commentsData = await getComments(postId);
         setComments(commentsData);
 
-        const handles = commentsData.map(comment => comment.userHandle);
-        const uniqueHandles = [...new Set(handles)];
-        const names = {};
+      const handles = commentsData.map(comment => comment.userHandle);
+      const uniqueHandles = [...new Set(handles)];
+      const names = {};
+
 
         await Promise.all(uniqueHandles.map(async (handle) => {
           const name = await getUserNameByHandle(handle);
@@ -111,7 +112,8 @@ const Comments = ({ postId, limit = 3, postAuthor }) => {
 Comments.propTypes = {
   postId: PropTypes.string.isRequired,
   limit: PropTypes.number,
-  postAuthor: PropTypes.string.isRequired,
+  postAuthor: PropTypes.string.isRequired, 
+
 };
 
 export default Comments;
