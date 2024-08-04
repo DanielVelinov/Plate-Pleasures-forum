@@ -42,7 +42,8 @@ export const getAllPosts = async (search = '') => {
 
     const posts = Object.values(snapshot.val()).map(post => ({
       ...post,
-      likedBy: post.likedBy ? Object.keys(post.likedBy) : [], 
+      likedBy: post.likedBy ? Object.keys(post.likedBy) : [],
+      comments: post.comments || {}, // Ensure comments object is included
     }));
 
     console.log('Fetched posts:', posts);
@@ -57,7 +58,6 @@ export const getAllPosts = async (search = '') => {
     throw new Error('Unable to fetch posts.');
   }
 };
-
 
 
 

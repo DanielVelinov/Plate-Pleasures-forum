@@ -23,15 +23,21 @@ export default function Header() {
       <h1>Culinary Forum</h1>
       <nav>
         <NavLink to="/">Home</NavLink>
-        {user && (<>
-          <NavLink to="/posts">All posts</NavLink>
-          <NavLink to="/posts-create">Create post</NavLink>
-        </>)}
-        {!user && <NavLink to="/login">Login</NavLink>}
-        {!user && <NavLink to="/register">Register</NavLink>}
-        {user && <button onClick={logout}>Logout</button>}
-        {userData && <span>Welcome, {userData.handle}</span>}
+        <NavLink to="/posts">All posts</NavLink> {/* Always show this link */}
+        {user ? (
+          <>
+            <NavLink to="/posts-create">Create post</NavLink>
+            <button onClick={logout}>Logout</button>
+            {userData && <span>Welcome, {userData.handle}</span>}
+          </>
+        ) : (
+          <>
+            <NavLink to="/login">Login</NavLink>
+            <NavLink to="/register">Register</NavLink>
+          </>
+        )}
       </nav>
     </header>
   );
 }
+

@@ -19,7 +19,8 @@ export default function AllPosts() {
         const postsData = await getAllPosts(search);
         const transformedPosts = postsData.map(post => ({
           ...post,
-          likedBy: Array.isArray(post.likedBy) ? post.likedBy : Object.keys(post.likedBy ?? {})
+          likedBy: Array.isArray(post.likedBy) ? post.likedBy : Object.keys(post.likedBy ?? {}),
+          comments: post.comments || {}, 
         }));
         setPosts(transformedPosts);
       } catch (error) {
@@ -77,7 +78,7 @@ export default function AllPosts() {
           <Post key={t.id} post={t} onDelete={handleDelete} />
         ))
       ) : (
-        'No tweets'
+        'No posts'
       )}
     </div>
   );

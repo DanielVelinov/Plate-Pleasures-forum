@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import PropTypes from 'prop-types';
 import { getComments, addComment, deleteComment } from '../services/posts.service';
-import { getUserNameByHandle } from '../services/users.service'; // Import the function
+import { getUserNameByHandle } from '../services/users.service'; 
 import { AppContext } from '../state/app.context';
 
 const Comments = ({ postId, limit = 3, postAuthor }) => {
@@ -16,7 +16,6 @@ const Comments = ({ postId, limit = 3, postAuthor }) => {
       const commentsData = await getComments(postId);
       setComments(commentsData);
 
-      // Fetch user names for the comments
       const handles = commentsData.map(comment => comment.userHandle);
       const uniqueHandles = [...new Set(handles)];
       const names = {};
@@ -102,7 +101,7 @@ const Comments = ({ postId, limit = 3, postAuthor }) => {
 Comments.propTypes = {
   postId: PropTypes.string.isRequired,
   limit: PropTypes.number,
-  postAuthor: PropTypes.string.isRequired, // Add postAuthor prop
+  postAuthor: PropTypes.string.isRequired, 
 };
 
 export default Comments;
