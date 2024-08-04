@@ -1,4 +1,5 @@
-import { get, set, ref, query, equalTo, orderByChild } from 'firebase/database';
+
+import { get, set, ref, query, equalTo, orderByChild, update } from 'firebase/database';
 import { db } from '../config/firebase-config';
 
 export const getUserByHandle = async (handle) => {
@@ -34,22 +35,23 @@ export const getUserData = async (uid) => {
 export const getUserNameByHandle = async (handle) => {
   try {
     const user = await getUserByHandle(handle);
-    return user?.name || handle; // Assuming `name` is the field for the user's name
+    return user?.name || handle; 
   } catch (error) {
     console.error('Error fetching user name by handle:', error);
     throw new Error('Unable to fetch user name.');
   }
 };
 
-// New function to save user details
-export const saveUserDetails = async ({ uid, email, firstName, lastName, phoneNumber = null }) => {
+
+export const saveUserDetails = async ({ uid, email, firstName, lastName, phoneNumber = null, isAdmin = false }) => {
   try {
     await set(ref(db, `users/${uid}`), {
       email,
       firstName,
       lastName,
       phoneNumber,
-      createdOn: new Date().toISOString()
+      createdOn: new Date().toISOString(),
+      isAdmin 
     });
   } catch (error) {
     console.error('Error saving user details:', error);
@@ -57,7 +59,7 @@ export const saveUserDetails = async ({ uid, email, firstName, lastName, phoneNu
   }
 };
 
-// New function to get all users
+
 export const getAllUsers = async () => {
   try {
     const snapshot = await get(ref(db, 'users'));
@@ -65,5 +67,16 @@ export const getAllUsers = async () => {
   } catch (error) {
     console.error('Error fetching all users:', error);
     throw new Error('Unable to fetch users.');
+  }
+};
+
+
+export const toggleUserBlockStatus = async (userHandle, blockStatus) => {
+  try {
+    await update(ref(db, `users/${userHandle}`), { isBlocked: blockStatus });
+    console.log(`User ${userHandle} ${blockStatus ? 'blocked' : 'unblocked'} successfully.`);
+  } catch (error) {
+    console.error('Error updating user block status:', error);
+    throw new Error('Unable to update user block status.');
   }
 };

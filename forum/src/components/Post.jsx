@@ -1,14 +1,17 @@
+
 import PropTypes from 'prop-types';
 import { useContext, useEffect, useState } from 'react';
 import { AppContext } from '../state/app.context';
 import { getUserByHandle } from '../services/users.service';
 import Comments from './Comments';
+import EditPost from './EditPost';  
 import { dislikePost, likePost, deletePost } from '../services/posts.service';
 
 export default function Post({ post, onDelete }) {
   const { userData } = useContext(AppContext);
   const [authorName, setAuthorName] = useState('');
   const [isExpanded, setIsExpanded] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);  
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -61,6 +64,14 @@ export default function Post({ post, onDelete }) {
     setIsExpanded(!isExpanded);
   };
 
+  const toggleEdit = () => {
+    setIsEditing(!isEditing);
+  };
+
+  const handleSave = () => {
+    setIsEditing(false);
+  };
+
   const formattedDate = new Date(post.createdOn).toLocaleDateString();
   const snippet = post.content.length > 100 ? `${post.content.substring(0, 100)}...` : post.content;
 
@@ -68,6 +79,7 @@ export default function Post({ post, onDelete }) {
     <div>
       <h3>{post.title}</h3>
       <p>Category: {post.category}</p>
+      <p>Tags: {post.tags?.join(', ')}</p>
       <p>{isExpanded ? post.content : snippet}</p>
       {post.content.length > 100 && (
         <button onClick={toggleExpanded}>
@@ -78,9 +90,13 @@ export default function Post({ post, onDelete }) {
       <button onClick={toggleLike}>
         {Array.isArray(post.likedBy) && post.likedBy.includes(userData?.handle) ? 'Dislike' : 'Like'}
       </button>
-      {userData?.handle === post.author && (
-        <button onClick={handleDelete}>Delete</button>
+      {(userData?.handle === post.author || userData?.isAdmin) && (
+        <>
+          <button onClick={handleDelete}>Delete</button>
+          <button onClick={toggleEdit}>{isEditing ? 'Cancel' : 'Edit'}</button>
+        </>
       )}
+      {isEditing && <EditPost post={post} onSave={handleSave} />}  
       <Comments postId={post.id} postAuthor={post.author} />
       <p>Created on: {formattedDate}</p>
     </div>
@@ -96,6 +112,7 @@ Post.propTypes = {
     createdOn: PropTypes.string.isRequired,
     category: PropTypes.string.isRequired,
     likedBy: PropTypes.arrayOf(PropTypes.string), 
+    tags: PropTypes.arrayOf(PropTypes.string),  
   }).isRequired,
   onDelete: PropTypes.func,
 };

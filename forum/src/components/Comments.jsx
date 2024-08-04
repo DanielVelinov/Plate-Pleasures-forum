@@ -1,7 +1,8 @@
+
 import React, { useState, useEffect, useContext } from 'react';
 import PropTypes from 'prop-types';
-import { getComments, addComment, deleteComment } from '../services/posts.service';
-import { getUserNameByHandle } from '../services/users.service'; // Import the function
+import { getComments, addComment, deleteComment } from '../services/posts.service'; 
+import { getUserNameByHandle } from '../services/users.service';
 import { AppContext } from '../state/app.context';
 
 const Comments = ({ postId, limit = 3, postAuthor }) => {
@@ -13,20 +14,23 @@ const Comments = ({ postId, limit = 3, postAuthor }) => {
 
   useEffect(() => {
     const fetchComments = async () => {
-      const commentsData = await getComments(postId);
-      setComments(commentsData);
+      try {
+        const commentsData = await getComments(postId);
+        setComments(commentsData);
 
-      // Fetch user names for the comments
-      const handles = commentsData.map(comment => comment.userHandle);
-      const uniqueHandles = [...new Set(handles)];
-      const names = {};
+        const handles = commentsData.map(comment => comment.userHandle);
+        const uniqueHandles = [...new Set(handles)];
+        const names = {};
 
-      await Promise.all(uniqueHandles.map(async (handle) => {
-        const name = await getUserNameByHandle(handle);
-        names[handle] = name;
-      }));
+        await Promise.all(uniqueHandles.map(async (handle) => {
+          const name = await getUserNameByHandle(handle);
+          names[handle] = name;
+        }));
 
-      setUserNames(names);
+        setUserNames(names);
+      } catch (error) {
+        console.error('Error fetching comments:', error);
+      }
     };
 
     fetchComments();
@@ -34,21 +38,26 @@ const Comments = ({ postId, limit = 3, postAuthor }) => {
 
   const handleAddComment = async () => {
     if (newComment.trim()) {
-      await addComment(postId, newComment, userData.handle);
-      setNewComment('');
-      const commentsData = await getComments(postId);
-      setComments(commentsData);
+      try {
+        await addComment(postId, newComment, userData.handle);
+        setNewComment('');
+        const commentsData = await getComments(postId);
+        setComments(commentsData);
 
-      const handles = commentsData.map(comment => comment.userHandle);
-      const uniqueHandles = [...new Set(handles)];
-      const names = {};
+        const handles = commentsData.map(comment => comment.userHandle);
+        const uniqueHandles = [...new Set(handles)];
+        const names = {};
 
-      await Promise.all(uniqueHandles.map(async (handle) => {
-        const name = await getUserNameByHandle(handle);
-        names[handle] = name;
-      }));
+        await Promise.all(uniqueHandles.map(async (handle) => {
+          const name = await getUserNameByHandle(handle);
+          names[handle] = name;
+        }));
 
-      setUserNames(names);
+        setUserNames(names);
+      } catch (error) {
+        console.error('Error adding comment:', error);
+        alert('Failed to add comment. Please try again.');
+      }
     }
   };
 
@@ -56,7 +65,7 @@ const Comments = ({ postId, limit = 3, postAuthor }) => {
     if (window.confirm('Are you sure you want to delete this comment?')) {
       try {
         await deleteComment(postId, commentId);
-        setComments(comments.filter(comment => comment.id !== commentId)); // Remove the comment from the state
+        setComments(comments.filter(comment => comment.id !== commentId)); 
       } catch (error) {
         console.error('Failed to delete comment:', error);
         alert('Failed to delete comment. Please try again.');
@@ -102,7 +111,7 @@ const Comments = ({ postId, limit = 3, postAuthor }) => {
 Comments.propTypes = {
   postId: PropTypes.string.isRequired,
   limit: PropTypes.number,
-  postAuthor: PropTypes.string.isRequired, // Add postAuthor prop
+  postAuthor: PropTypes.string.isRequired,
 };
 
 export default Comments;

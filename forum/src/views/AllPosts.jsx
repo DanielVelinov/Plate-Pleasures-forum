@@ -11,6 +11,7 @@ export default function AllPosts() {
   const [searchParams, setSearchParams] = useSearchParams();
   const search = searchParams.get('search') ?? '';
   const [category, setCategory] = useState('all');
+  const [sort, setSort] = useState('newest'); 
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -33,26 +34,39 @@ export default function AllPosts() {
     fetchPosts();
   }, [search]);
 
+  useEffect(() => {
+    filterPosts(posts, category, sort);
+  }, [category, posts, sort]);
+
   const setSearch = (value) => {
     setSearchParams({
       search: value,
     });
   };
-  useEffect(() => {
-    filterPosts(posts, category);
-  }, [category, posts]);
 
-  const filterPosts = (posts, category) => {
-    if (category === 'all') {
-      setFilteredPosts(posts);
-    } else {
-      setFilteredPosts(posts.filter(post => post.category === category));
+  const filterPosts = (posts, category, sort) => {
+    let filtered = posts;
+    if (category !== 'all') {
+      filtered = filtered.filter(post => post.category === category);
     }
+
+    if (sort === 'mostLiked') {
+      filtered = filtered.sort((a, b) => b.likedBy.length - a.likedBy.length);
+    } else if (sort === 'newest') {
+      filtered = filtered.sort((a, b) => new Date(b.createdOn) - new Date(a.createdOn));
+    }
+
+    setFilteredPosts(filtered);
   };
 
   const handleCategoryChange = (event) => {
     setCategory(event.target.value);
   };
+
+  const handleSortChange = (event) => {
+    setSort(event.target.value);
+  };
+
   const handleDelete = (postId) => {
     setPosts(posts.filter(post => post.id !== postId));
   };
@@ -70,6 +84,11 @@ export default function AllPosts() {
         <option value="Main courses">Main courses</option>
         <option value="Vegetarian">Vegetarian</option>
       </select><br /><br />
+      <label htmlFor="sort">Sort by: </label>
+      <select value={sort} onChange={handleSortChange} name="sort" id="sort">
+        <option value="newest">Newest</option>
+        <option value="mostLiked">Most Liked</option>
+      </select><br /><br />
       {loading ? (
         <p>Loading posts...</p>
       ) : filteredPosts.length > 0 ? (
@@ -77,7 +96,7 @@ export default function AllPosts() {
           <Post key={t.id} post={t} onDelete={handleDelete} />
         ))
       ) : (
-        'No tweets'
+        'No posts'
       )}
     </div>
   );

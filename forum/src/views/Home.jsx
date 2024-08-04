@@ -1,5 +1,6 @@
+
 import { useState, useEffect } from "react";
-import { getAllPosts } from "../services/posts.service";
+import { getAllPosts } from "../services/posts.service";  
 import { getAllUsers } from "../services/users.service";
 
 export default function Home() {

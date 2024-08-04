@@ -1,3 +1,4 @@
+
 import { useContext, useState } from "react";
 import { createPost as apiCreatePost } from "../services/posts.service";
 import { AppContext } from '../state/app.context';
@@ -12,7 +13,9 @@ export default function CreatePostComponent() {
     title: '',
     content: '',
     category: '',
+    tags: [],  
   });
+  const [tagInput, setTagInput] = useState('');
   const { userData } = useContext(AppContext);
 
   const updatePost = (key, value) => {
@@ -42,13 +45,25 @@ export default function CreatePostComponent() {
     }
 
     try {
-      await apiCreatePost(userData.handle, post.title, post.content, post.category);
-      setPost({ title: '', content: '', category: '' });
+      await apiCreatePost(userData.handle, post.title, post.content, post.category, post.tags);  
+      setPost({ title: '', content: '', category: '', tags: [] });
+      setTagInput('');
       alert('Post created successfully!');
     } catch (error) {
       console.error('Failed to create post:', error);
       alert('Failed to create post. Please try again.');
     }
+  };
+
+  const addTag = () => {
+    if (tagInput && !post.tags.includes(tagInput)) {
+      setPost({ ...post, tags: [...post.tags, tagInput] });
+      setTagInput('');
+    }
+  };
+
+  const removeTag = (tagToRemove) => {
+    setPost({ ...post, tags: post.tags.filter(tag => tag !== tagToRemove) });
   };
 
   return (
@@ -66,6 +81,16 @@ export default function CreatePostComponent() {
         <option value="Main courses">Main courses</option>
         <option value="Vegetarian">Vegetarian</option>
       </select><br /><br />
+      <label htmlFor="tags">Tags: </label>
+      <input value={tagInput} onChange={e => setTagInput(e.target.value)} type="text" name="tags" id="tags" />
+      <button onClick={addTag}>Add Tag</button>
+      <ul>
+        {post.tags.map(tag => (
+          <li key={tag}>
+            {tag} <button onClick={() => removeTag(tag)}>Remove</button>
+          </li>
+        ))}
+      </ul><br />
       <button onClick={handleCreatePost}>Create</button>
     </div>
   );

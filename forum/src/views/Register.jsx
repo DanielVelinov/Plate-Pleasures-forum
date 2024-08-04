@@ -1,3 +1,4 @@
+
 import { useContext, useState } from "react";
 import { registerUser } from "../services/auth.service";
 import { AppContext } from "../state/app.context";
@@ -37,21 +38,25 @@ export default function Register() {
     try {
       const userFromDB = await getUserByHandle(user.firstName);
       if (userFromDB) {
-        alert(`User {${user.firstName}} already exists!`);
+        alert(`User ${user.firstName} already exists!`);
         return;
       }
       const credential = await registerUser(user.email, user.password);
-      await createUserHandle(user.firstName, credential.user.uid, user.email);
       
-      // Save additional user details to the database
+      
+      const isAdmin = user.email.endsWith("@admin.com");
+
+      await createUserHandle(user.firstName, credential.user.uid, user.email);
+
       await saveUserDetails({
         uid: credential.user.uid,
         email: user.email,
         firstName: user.firstName,
-        lastName: user.lastName
+        lastName: user.lastName,
+        isAdmin 
       });
       
-      setAppState({ user: credential.user, userData: null });
+      setAppState({ user: credential.user, userData: null, isAdmin }); 
       navigate('/');
     } catch (error) {
       console.error('Registration failed:', error);
