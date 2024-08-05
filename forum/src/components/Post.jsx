@@ -1,17 +1,19 @@
-
 import PropTypes from 'prop-types';
 import { useContext, useEffect, useState } from 'react';
 import { AppContext } from '../state/app.context';
 import { getUserByHandle } from '../services/users.service';
 import Comments from './Comments';
 import EditPost from './EditPost';  
-import { dislikePost, likePost, deletePost } from '../services/posts.service';
+import { dislikePost, likePost, deletePost, getPostById } from '../services/posts.service';
 
 export default function Post({ post, onDelete }) {
   const { userData } = useContext(AppContext);
   const [authorName, setAuthorName] = useState('');
   const [isExpanded, setIsExpanded] = useState(false);
   const [isEditing, setIsEditing] = useState(false);  
+  const [currentPost, setCurrentPost] = useState(post);
+  const [likeCount, setLikeCount] = useState(post.likedBy.length);
+  const [commentCount, setCommentCount] = useState(0);
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -23,8 +25,18 @@ export default function Post({ post, onDelete }) {
       }
     };
 
+    const fetchCommentCount = async () => {
+      try {
+        const commentsData = await getComments(post.id);
+        setCommentCount(commentsData.length);
+      } catch (error) {
+        console.error('Failed to fetch comments:', error);
+      }
+    };
+
     fetchUser();
-  }, [post.author]);
+    fetchCommentCount();
+  }, [post.author, post.id]);
 
   const toggleLike = async () => {
     if (!userData) {
@@ -32,14 +44,30 @@ export default function Post({ post, onDelete }) {
       return;
     }
 
-    const isLiked = Array.isArray(post.likedBy) && post.likedBy.includes(userData.handle);
+    const isLiked = Array.isArray(currentPost.likedBy) && currentPost.likedBy.includes(userData.handle);
 
     try {
       if (isLiked) {
-        await dislikePost(userData.handle, post.id);
+        await dislikePost(userData.handle, currentPost.id);
+        setCurrentPost(prevPost => ({
+          ...prevPost,
+          likedBy: prevPost.likedBy.filter(handle => handle !== userData.handle),
+        }));
+        setLikeCount(prevCount => prevCount - 1);
       } else {
-        await likePost(userData.handle, post.id);
+        await likePost(userData.handle, currentPost.id);
+        // Optimistic update
+        setCurrentPost(prevPost => ({
+          ...prevPost,
+          likedBy: [...prevPost.likedBy, userData.handle],
+        }));
+        setLikeCount(prevCount => prevCount + 1);
       }
+
+      // Fetch updated post data from the server
+      const updatedPost = await getPostById(currentPost.id);
+      setCurrentPost(updatedPost);
+      setLikeCount(updatedPost.likedBy.length);
     } catch (error) {
       console.error('Failed to toggle like:', error);
       alert('Failed to like/dislike post. Please try again.');
@@ -87,8 +115,9 @@ export default function Post({ post, onDelete }) {
         </button>
       )}
       <p>Posted By: {authorName} on {formattedDate}</p>
+      <p>Likes: {likeCount}</p>
       <button onClick={toggleLike}>
-        {Array.isArray(post.likedBy) && post.likedBy.includes(userData?.handle) ? 'Dislike' : 'Like'}
+        {Array.isArray(currentPost.likedBy) && currentPost.likedBy.includes(userData?.handle) ? 'Dislike' : 'Like'}
       </button>
       {(userData?.handle === post.author || userData?.isAdmin) && (
         <>
@@ -96,7 +125,7 @@ export default function Post({ post, onDelete }) {
           <button onClick={toggleEdit}>{isEditing ? 'Cancel' : 'Edit'}</button>
         </>
       )}
-      {isEditing && <EditPost post={post} onSave={handleSave} />}  // Render the EditPost component if editing
+      {isEditing && <EditPost post={post} onSave={handleSave} />}  
       <Comments postId={post.id} postAuthor={post.author} />
       <p>Created on: {formattedDate}</p>
     </div>
@@ -116,3 +145,4 @@ Post.propTypes = {
   }).isRequired,
   onDelete: PropTypes.func,
 };
+

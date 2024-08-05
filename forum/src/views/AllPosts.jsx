@@ -75,21 +75,26 @@ export default function AllPosts() {
   return (
     <div>
       <h1>Posts:</h1>
-      <label htmlFor="search">Search: </label>
-      <input value={search} onChange={e => setSearchParams({ search: e.target.value })} type="text" name="search" id="search" /><br /><br />
-      <label htmlFor="category">Category: </label>
-      <select value={category} onChange={handleCategoryChange} name="category" id="category">
-        <option value="all">All</option>
-        <option value="Soups">Soups</option>
-        <option value="Salads">Salads</option>
-        <option value="Main courses">Main courses</option>
-        <option value="Vegetarian">Vegetarian</option>
-      </select><br /><br />
-      <label htmlFor="sort">Sort by: </label>
-      <select value={sort} onChange={handleSortChange} name="sort" id="sort">
-        <option value="newest">Newest</option>
-        <option value="mostLiked">Most Liked</option>
-      </select><br /><br />
+      <div className="filters-container">
+        <label htmlFor="search">Search: </label>
+        <input value={search} onChange={e => setSearchParams({ search: e.target.value })} type="text" name="search" id="search" />
+
+        <label htmlFor="category">Category: </label>
+        <select value={category} onChange={handleCategoryChange} name="category" id="category">
+          <option value="all">All</option>
+          <option value="Soups">Soups</option>
+          <option value="Salads">Salads</option>
+          <option value="Main courses">Main courses</option>
+          <option value="Vegetarian">Vegetarian</option>
+        </select>
+
+        <label htmlFor="sort">Sort by: </label>
+        <select value={sort} onChange={handleSortChange} name="sort" id="sort">
+          <option value="newest">Newest</option>
+          <option value="mostLiked">Most Liked</option>
+        </select>
+      </div>
+
       {loading ? (
         <p>Loading posts...</p>
       ) : filteredPosts.length > 0 ? (
