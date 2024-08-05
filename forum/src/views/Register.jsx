@@ -1,4 +1,3 @@
-
 import { useContext, useState } from "react";
 import { registerUser } from "../services/auth.service";
 import { AppContext } from "../state/app.context";
@@ -43,7 +42,8 @@ export default function Register() {
       }
       const credential = await registerUser(user.email, user.password);
       
-      const isAdmin = user.email.endsWith("@admin.com");
+      // Check if the user is an admin based on the email domain
+      const isAdmin = user.email.endsWith("@admin.com"); // Customize this condition based on your needs
 
       await createUserHandle(user.firstName, credential.user.uid, user.email);
 

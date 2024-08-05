@@ -1,5 +1,5 @@
-
 import React, { useEffect, useState, useContext } from 'react';
+import PropTypes from 'prop-types';
 import { AppContext } from '../state/app.context';
 import { getAllUsers, toggleUserBlockStatus } from '../services/users.service';
 
@@ -9,7 +9,13 @@ export default function AdminPanel() {
     const [search, setSearch] = useState('');
     const [filteredUsers, setFilteredUsers] = useState([]);
 
+    // Fetch users if userData.isAdmin is true
     useEffect(() => {
+        if (!userData?.isAdmin) {
+            console.log('User is not an admin.');
+            return;
+        }
+
         const fetchUsers = async () => {
             try {
                 const usersData = await getAllUsers();
@@ -21,29 +27,35 @@ export default function AdminPanel() {
         };
 
         fetchUsers();
-    }, []);
+    }, [userData]);
 
+    // Filter users based on search input
     useEffect(() => {
         if (search) {
-            setFilteredUsers(users.filter(user =>
-                user.firstName.toLowerCase().includes(search.toLowerCase()) ||
-                user.lastName.toLowerCase().includes(search.toLowerCase()) ||
-                user.email.toLowerCase().includes(search.toLowerCase())
-            ));
+            setFilteredUsers(
+                users.filter(user =>
+                    user.firstName.toLowerCase().includes(search.toLowerCase()) ||
+                    user.lastName.toLowerCase().includes(search.toLowerCase()) ||
+                    user.email.toLowerCase().includes(search.toLowerCase()) ||
+                    user.handle.toLowerCase().includes(search.toLowerCase()) // Added username search
+                )
+            );
         } else {
             setFilteredUsers(users);
         }
     }, [search, users]);
 
-    const handleBlockToggle = async (uid) => {
+    const handleBlockToggle = async (userHandle, currentBlockStatus) => {
         try {
-            await toggleUserBlockStatus(uid);
-            setUsers(prevUsers => prevUsers.map(user => {
-                if (user.uid === uid) {
-                    return { ...user, isBlocked: !user.isBlocked };
-                }
-                return user;
-            }));
+            await toggleUserBlockStatus(userHandle, !currentBlockStatus);
+            setUsers(prevUsers =>
+                prevUsers.map(user => {
+                    if (user.handle === userHandle) {
+                        return { ...user, isBlocked: !user.isBlocked };
+                    }
+                    return user;
+                })
+            );
         } catch (error) {
             console.error('Failed to toggle block status:', error);
             alert('Failed to toggle user block status. Please try again.');
@@ -62,14 +74,19 @@ export default function AdminPanel() {
                     type="text"
                     name="search"
                     id="search"
-                    placeholder="Search by name or email"
+                    placeholder="Search by name, email, or username"
                 />
             </div>
             <ul className="user-list">
                 {filteredUsers.map(user => (
-                    <li key={user.uid} className="user-item">
-                        <span className="user-info">{user.firstName} {user.lastName} ({user.email})</span>
-                        <button className="block-toggle-btn" onClick={() => handleBlockToggle(user.uid)}>
+                    <li key={user.uid || user.email} className="user-item"> {/* Ensure each user has a unique key */}
+                        <span className="user-info">
+                            {user.firstName} {user.lastName} ({user.email})
+                        </span>
+                        <button
+                            className="block-toggle-btn"
+                            onClick={() => handleBlockToggle(user.handle, user.isBlocked)}
+                        >
                             {user.isBlocked ? 'Unblock' : 'Block'}
                         </button>
                     </li>
@@ -78,3 +95,10 @@ export default function AdminPanel() {
         </div>
     );
 }
+
+AdminPanel.propTypes = {
+    userData: PropTypes.shape({
+        handle: PropTypes.string,
+        isAdmin: PropTypes.bool,
+    })
+};

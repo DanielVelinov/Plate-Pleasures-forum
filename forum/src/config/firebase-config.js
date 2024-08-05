@@ -1,10 +1,7 @@
-
-
 import { initializeApp } from "firebase/app";
 import { getAuth } from 'firebase/auth';
 import { getDatabase } from 'firebase/database';
 
-// Firebase конфигурация
 const firebaseConfig = {
   apiKey: "AIzaSyBOSCpo4oCaP6GHajA_jB2Y2LuUA5I8NpI",
   authDomain: "reactproject-aeda3.firebaseapp.com",
@@ -15,7 +12,7 @@ const firebaseConfig = {
   databaseURL: "https://reactproject-aeda3-default-rtdb.europe-west1.firebasedatabase.app/"
 };
 
-// Инициализация на Firebase
+// Initialize Firebase
 const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
-export const db = getDatabase(app); // Хендлер за базата данни
+export const db = getDatabase(app);

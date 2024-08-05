@@ -22,7 +22,8 @@ header {
     background-color: var(--secondary-bg-color);
     padding: 20px;
     display: flex;
-    flex-direction: column; /* Stack elements vertically */
+    flex-direction: column;
+    /* Stack elements vertically */
     align-items: center;
     border-bottom: 1px solid var(--highlight-color);
 }
@@ -31,7 +32,8 @@ header {
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-bottom: 20px; /* Space between logo and nav links */
+    margin-bottom: 20px;
+    /* Space between logo and nav links */
 }
 
 .logo {
@@ -49,38 +51,46 @@ h1 {
 .navbar {
     display: flex;
     align-items: center;
-    flex-direction: column; /* Stack nav links vertically */
+    flex-direction: column;
+    /* Stack nav links vertically */
 }
 
 .nav-links {
     display: flex;
-    gap: 20px; /* Space between navigation buttons */
+    gap: 20px;
+    /* Space between navigation buttons */
 }
 
 .nav-links a {
     color: var(--text-color);
     text-decoration: none;
     transition: background-color 0.3s ease, color 0.3s ease;
-    padding: 10px 15px;  /* Padding for button-like appearance */
-    border-radius: var(--border-radius);  /* Use variable for consistency */
+    padding: 10px 15px;
+    /* Padding for button-like appearance */
+    border-radius: var(--border-radius);
+    /* Use variable for consistency */
     background-color: transparent;
-    border: 2px solid var(--button-bg-color); /* Border for visibility */
+    border: 2px solid var(--button-bg-color);
+    /* Border for visibility */
 }
 
 .nav-links a:hover {
     color: var(--text-color);
-    background-color: var(--button-bg-hover-color); /* Hover background */
+    background-color: var(--button-bg-hover-color);
+    /* Hover background */
 }
 
 .nav-links a.active {
     color: var(--text-color);
-    background-color: var(--button-bg-color); /* Active background */
+    background-color: var(--button-bg-color);
+    /* Active background */
     border-radius: var(--border-radius);
     padding: 10px 15px;
 }
 
 .logout-container {
-    margin-top: 10px; /* Space above the logout button */
+    margin-top: 10px;
+    /* Space above the logout button */
     display: flex;
     align-items: center;
 }
@@ -104,7 +114,14 @@ h1 {
     color: var(--text-secondary-color);
 }
 
-.button, .create-post-btn, .add-tag-btn, .remove-tag-btn, .login-btn, .register-btn, .save-profile-btn, .back-home-btn {
+.button,
+.create-post-btn,
+.add-tag-btn,
+.remove-tag-btn,
+.login-btn,
+.register-btn,
+.save-profile-btn,
+.back-home-btn {
     font-family: 'Roboto', sans-serif;
     font-weight: 500;
     background-color: var(--button-bg-color);
@@ -116,7 +133,14 @@ h1 {
     transition: background-color var(--transition);
 }
 
-.button:hover, .create-post-btn:hover, .add-tag-btn:hover, .remove-tag-btn:hover, .login-btn:hover, .register-btn:hover, .save-profile-btn:hover, .back-home-btn:hover {
+.button:hover,
+.create-post-btn:hover,
+.add-tag-btn:hover,
+.remove-tag-btn:hover,
+.login-btn:hover,
+.register-btn:hover,
+.save-profile-btn:hover,
+.back-home-btn:hover {
     background-color: var(--button-bg-hover-color);
 }
 
@@ -337,4 +361,55 @@ footer {
     border-top: 1px solid var(--highlight-color);
     margin-top: 20px;
     width: 100%;
+}
+
+.admin-panel {
+    padding: 20px;
+    background-color: var(--secondary-bg-color);
+    color: var(--text-color);
+    border-radius: var(--border-radius);
+}
+
+.user-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    border-bottom: 1px solid var(--highlight-color);
+}
+
+.user-info {
+    color: var(--text-secondary-color);
+}
+
+.block-toggle-btn {
+    font-family: 'Roboto', sans-serif;
+    background-color: var(--button-bg-color);
+    color: var(--text-color);
+    padding: 8px 16px;
+    border: none;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    transition: background-color var(--transition);
+}
+
+.block-toggle-btn:hover {
+    background-color: var(--button-bg-hover-color);
+}
+
+.search-input {
+    margin-bottom: 20px;
+    padding: 10px;
+    border-radius: var(--border-radius);
+    border: 1px solid var(--highlight-color);
+    width: 100%;
+    box-sizing: border-box;
+    color: var(--text-color);
+    background-color: var(--primary-bg-color);
+}
+
+.search-section label {
+    margin-bottom: 10px;
+    display: block;
+    color: var(--text-color);
 }

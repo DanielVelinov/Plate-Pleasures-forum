@@ -1,13 +1,12 @@
-
 import React, { useContext } from 'react';
 import { NavLink } from 'react-router-dom';
-import { FaHome, FaClipboardList, FaPlus, FaSignOutAlt } from 'react-icons/fa';
+import { FaHome, FaClipboardList, FaPlus, FaSignOutAlt, FaUserShield } from 'react-icons/fa';
 import { AppContext } from '../state/app.context';
 import { logoutUser } from '../services/auth.service';
 import { useNavigate } from "react-router-dom";
 
 export default function Sidebar() {
-    const { user, setAppState } = useContext(AppContext);
+    const { user, userData, setAppState } = useContext(AppContext);
     const navigate = useNavigate();
 
     const logout = async () => {
@@ -24,8 +23,8 @@ export default function Sidebar() {
     return (
         <div className="sidebar">
             <div className="sidebar-icon-container">
-                <NavLink 
-                    to="/" 
+                <NavLink
+                    to="/"
                     className={({ isActive }) => (isActive ? 'sidebar-icon active' : 'sidebar-icon')}
                 >
                     <FaHome />
@@ -33,8 +32,8 @@ export default function Sidebar() {
                 </NavLink>
             </div>
             <div className="sidebar-icon-container">
-                <NavLink 
-                    to="/posts" 
+                <NavLink
+                    to="/posts"
                     className={({ isActive }) => (isActive ? 'sidebar-icon active' : 'sidebar-icon')}
                 >
                     <FaClipboardList />
@@ -42,17 +41,28 @@ export default function Sidebar() {
                 </NavLink>
             </div>
             <div className="sidebar-icon-container">
-                <NavLink 
-                    to="/posts-create" 
+                <NavLink
+                    to="/posts-create"
                     className={({ isActive }) => (isActive ? 'sidebar-icon active' : 'sidebar-icon')}
                 >
                     <FaPlus />
                     <span className="tooltip">Create Post</span>
                 </NavLink>
             </div>
+            {userData?.isAdmin && (
+                <div className="sidebar-icon-container">
+                    <NavLink
+                        to="/admin"
+                        className={({ isActive }) => (isActive ? 'sidebar-icon active' : 'sidebar-icon')}
+                    >
+                        <FaUserShield />
+                        <span className="tooltip">Admin Panel</span>
+                    </NavLink>
+                </div>
+            )}
             {user && (
                 <div className="sidebar-icon-container">
-                    <button 
+                    <button
                         className="sidebar-icon"
                         onClick={logout}
                     >

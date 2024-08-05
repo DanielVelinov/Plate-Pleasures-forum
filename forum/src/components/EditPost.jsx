@@ -1,4 +1,3 @@
-
 import PropTypes from 'prop-types';
 import { useState, useContext } from 'react';
 import { AppContext } from '../state/app.context';
@@ -10,8 +9,10 @@ export default function EditPost({ post, onSave }) {
         title: post.title,
         content: post.content,
         category: post.category,
-        tags: post.tags || [], // Добавете tags в състоянието, ако е необходимо
+        tags: post.tags || [], // Include tags
     });
+
+    const [tagInput, setTagInput] = useState('');
 
     const updateEditedPost = (key, value) => {
         setEditedPost({
@@ -49,6 +50,18 @@ export default function EditPost({ post, onSave }) {
         }
     };
 
+    const addTag = () => {
+        const lowerCaseTag = tagInput.toLowerCase();
+        if (tagInput && !editedPost.tags.includes(lowerCaseTag)) {
+            setEditedPost({ ...editedPost, tags: [...editedPost.tags, lowerCaseTag] });
+            setTagInput('');
+        }
+    };
+
+    const removeTag = (tagToRemove) => {
+        setEditedPost({ ...editedPost, tags: editedPost.tags.filter(tag => tag !== tagToRemove) });
+    };
+
     return (
         <div className="edit-post-form">
             <h1>Edit Post</h1>
@@ -83,6 +96,24 @@ export default function EditPost({ post, onSave }) {
                 <option value="Main courses">Main courses</option>
                 <option value="Vegetarian">Vegetarian</option>
             </select><br /><br />
+            <label htmlFor="tags">Tags: </label>
+            <input
+                className="input-field"
+                value={tagInput}
+                onChange={e => setTagInput(e.target.value)}
+                type="text"
+                name="tags"
+                id="tags"
+                placeholder="Add tags"
+            />
+            <button className="add-tag-btn" onClick={addTag}>Add Tag</button>
+            <ul className="tags-list">
+                {editedPost.tags.map(tag => (
+                    <li key={tag} className="tag-item">
+                        {tag} <button className="remove-tag-btn" onClick={() => removeTag(tag)}>Remove</button>
+                    </li>
+                ))}
+            </ul><br />
             <button className="save-post-btn" onClick={handleSave}>Save</button>
         </div>
     );
@@ -94,6 +125,7 @@ EditPost.propTypes = {
         title: PropTypes.string.isRequired,
         content: PropTypes.string.isRequired,
         category: PropTypes.string.isRequired,
+        tags: PropTypes.arrayOf(PropTypes.string), // Added PropTypes for tags
     }).isRequired,
     onSave: PropTypes.func.isRequired,
 };

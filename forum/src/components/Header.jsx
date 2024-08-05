@@ -1,4 +1,3 @@
-
 import { useContext } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { AppContext } from "../state/app.context";
@@ -33,6 +32,9 @@ export default function Header() {
             <>
               <NavLink to="/posts">All posts</NavLink>
               <NavLink to="/posts-create">Create post</NavLink>
+              {userData?.isAdmin && ( // Check if user is an admin
+                <NavLink to="/admin">Admin Panel</NavLink> // Admin button
+              )}
             </>
           )}
           {!user && <NavLink to="/login">Login</NavLink>}
