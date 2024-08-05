@@ -56,7 +56,6 @@ export default function Post({ post, onDelete }) {
         setLikeCount(prevCount => prevCount - 1);
       } else {
         await likePost(userData.handle, currentPost.id);
-        // Optimistic update
         setCurrentPost(prevPost => ({
           ...prevPost,
           likedBy: [...prevPost.likedBy, userData.handle],
@@ -64,7 +63,6 @@ export default function Post({ post, onDelete }) {
         setLikeCount(prevCount => prevCount + 1);
       }
 
-      // Fetch updated post data from the server
       const updatedPost = await getPostById(currentPost.id);
       setCurrentPost(updatedPost);
       setLikeCount(updatedPost.likedBy.length);

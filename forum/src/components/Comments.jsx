@@ -9,7 +9,7 @@ const Comments = ({ postId, limit = 3, postAuthor }) => {
   const [newComment, setNewComment] = useState('');
   const [showAll, setShowAll] = useState(false);
   const [userNames, setUserNames] = useState({});
-  const [commentCount, setCommentCount] = useState(0); // New state for comment count
+  const [commentCount, setCommentCount] = useState(0);
   const { userData } = useContext(AppContext);
 
   useEffect(() => {
@@ -17,7 +17,7 @@ const Comments = ({ postId, limit = 3, postAuthor }) => {
       try {
         const commentsData = await getComments(postId);
         setComments(commentsData);
-        setCommentCount(commentsData.length); // Update comment count
+        setCommentCount(commentsData.length); 
 
         const handles = commentsData.map(comment => comment.userHandle);
         const uniqueHandles = [...new Set(handles)];
@@ -44,7 +44,7 @@ const Comments = ({ postId, limit = 3, postAuthor }) => {
         setNewComment('');
         const commentsData = await getComments(postId);
         setComments(commentsData);
-        setCommentCount(commentsData.length); // Update comment count
+        setCommentCount(commentsData.length); 
 
         const handles = commentsData.map(comment => comment.userHandle);
         const uniqueHandles = [...new Set(handles)];
@@ -69,7 +69,7 @@ const Comments = ({ postId, limit = 3, postAuthor }) => {
         await deleteComment(postId, commentId);
         const updatedComments = comments.filter(comment => comment.id !== commentId);
         setComments(updatedComments);
-        setCommentCount(updatedComments.length); // Update comment count
+        setCommentCount(updatedComments.length); 
       } catch (error) {
         console.error('Failed to delete comment:', error);
         alert('Failed to delete comment. Please try again.');
@@ -81,7 +81,7 @@ const Comments = ({ postId, limit = 3, postAuthor }) => {
 
   return (
     <div>
-      <h3>Comments ({commentCount})</h3> {/* Display comment count */}
+      <h3>Comments ({commentCount})</h3> 
       <ul>
         {displayedComments.map(comment => (
           <li key={comment.id}>
