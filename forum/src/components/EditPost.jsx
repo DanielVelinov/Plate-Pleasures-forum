@@ -10,6 +10,7 @@ export default function EditPost({ post, onSave }) {
         title: post.title,
         content: post.content,
         category: post.category,
+        tags: post.tags || [], // Добавете tags в състоянието, ако е необходимо
     });
 
     const updateEditedPost = (key, value) => {
@@ -49,10 +50,11 @@ export default function EditPost({ post, onSave }) {
     };
 
     return (
-        <div>
-            <h1>Edit post</h1>
+        <div className="edit-post-form">
+            <h1>Edit Post</h1>
             <label htmlFor="title">Title: </label>
             <input
+                className="input-field"
                 value={editedPost.title}
                 onChange={e => updateEditedPost('title', e.target.value)}
                 type="text"
@@ -61,6 +63,7 @@ export default function EditPost({ post, onSave }) {
             /><br />
             <label htmlFor="content">Content: </label>
             <textarea
+                className="input-field"
                 value={editedPost.content}
                 onChange={e => updateEditedPost('content', e.target.value)}
                 name="content"
@@ -68,6 +71,7 @@ export default function EditPost({ post, onSave }) {
             /><br />
             <label htmlFor="category">Category: </label>
             <select
+                className="input-field"
                 value={editedPost.category}
                 onChange={e => updateEditedPost('category', e.target.value)}
                 name="category"
@@ -79,7 +83,7 @@ export default function EditPost({ post, onSave }) {
                 <option value="Main courses">Main courses</option>
                 <option value="Vegetarian">Vegetarian</option>
             </select><br /><br />
-            <button onClick={handleSave}>Save</button>
+            <button className="save-post-btn" onClick={handleSave}>Save</button>
         </div>
     );
 }

@@ -13,7 +13,8 @@ export default function CreatePostComponent() {
     title: '',
     content: '',
     category: '',
-    tags: [],  
+    tags: [],
+    image: null, // New state for the image
   });
   const [tagInput, setTagInput] = useState('');
   const { userData } = useContext(AppContext);
@@ -45,13 +46,27 @@ export default function CreatePostComponent() {
     }
 
     try {
-      await apiCreatePost(userData.handle, post.title, post.content, post.category, post.tags);  
-      setPost({ title: '', content: '', category: '', tags: [] });
+      // Handle the image upload logic here
+      if (post.image) {
+        const formData = new FormData();
+        formData.append('image', post.image);
+        // Add logic to upload the image to your server or a storage service
+      }
+
+      await apiCreatePost(userData.handle, post.title, post.content, post.category, post.tags);
+      setPost({ title: '', content: '', category: '', tags: [], image: null });
       setTagInput('');
       alert('Post created successfully!');
     } catch (error) {
       console.error('Failed to create post:', error);
       alert('Failed to create post. Please try again.');
+    }
+  };
+
+  const handleImageUpload = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setPost({ ...post, image: file });
     }
   };
 
@@ -67,31 +82,68 @@ export default function CreatePostComponent() {
   };
 
   return (
-    <div>
-      <h1>Create post</h1>
-      <label htmlFor="title">Title: </label>
-      <input value={post.title} onChange={e => updatePost('title', e.target.value)} type="text" name="title" id="title" /><br />
-      <label htmlFor="content">Content: </label>
-      <textarea value={post.content} onChange={e => updatePost('content', e.target.value)} name="content" id="content" /><br />
-      <label htmlFor="category">Category: </label>
-      <select value={post.category} onChange={e => updatePost('category', e.target.value)} name="category" id="category">
-        <option value="">Select a category</option>
-        <option value="Soups">Soups</option>
-        <option value="Salads">Salads</option>
-        <option value="Main courses">Main courses</option>
-        <option value="Vegetarian">Vegetarian</option>
-      </select><br /><br />
-      <label htmlFor="tags">Tags: </label>
-      <input value={tagInput} onChange={e => setTagInput(e.target.value)} type="text" name="tags" id="tags" />
-      <button onClick={addTag}>Add Tag</button>
-      <ul>
-        {post.tags.map(tag => (
-          <li key={tag}>
-            {tag} <button onClick={() => removeTag(tag)}>Remove</button>
-          </li>
-        ))}
-      </ul><br />
-      <button onClick={handleCreatePost}>Create</button>
+    <div className="create-post-page">
+      <h1>Create Post</h1>
+      <div className="form-section">
+        <label htmlFor="title">Title: </label>
+        <input
+          className="input-field"
+          value={post.title}
+          onChange={e => updatePost('title', e.target.value)}
+          type="text"
+          name="title"
+          id="title"
+          placeholder="Enter post title"
+        /><br />
+        <label htmlFor="content">Content: </label>
+        <textarea
+          className="input-field"
+          value={post.content}
+          onChange={e => updatePost('content', e.target.value)}
+          name="content"
+          id="content"
+          placeholder="Write your post content here"
+        /><br />
+        <label htmlFor="category">Category: </label>
+        <select
+          className="input-field"
+          value={post.category}
+          onChange={e => updatePost('category', e.target.value)}
+          name="category"
+          id="category"
+        >
+          <option value="">Select a category</option>
+          <option value="Soups">Soups</option>
+          <option value="Salads">Salads</option>
+          <option value="Main courses">Main courses</option>
+          <option value="Vegetarian">Vegetarian</option>
+        </select><br />
+        <label htmlFor="tags">Tags: </label>
+        <input
+          className="input-field"
+          value={tagInput}
+          onChange={e => setTagInput(e.target.value)}
+          type="text"
+          name="tags"
+          id="tags"
+          placeholder="Add tags"
+        />
+        <button className="add-tag-btn" onClick={addTag}>Add Tag</button>
+        <ul className="tags-list">
+          {post.tags.map(tag => (
+            <li key={tag} className="tag-item">
+              {tag} <button className="remove-tag-btn" onClick={() => removeTag(tag)}>Remove</button>
+            </li>
+          ))}
+        </ul><br />
+        <label htmlFor="image">Upload Image: </label>
+        <input
+          type="file"
+          accept="image/*"
+          onChange={handleImageUpload}
+        /><br />
+        <button className="create-post-btn" onClick={handleCreatePost}>Create</button>
+      </div>
     </div>
   );
 }

@@ -43,7 +43,6 @@ export default function Register() {
       }
       const credential = await registerUser(user.email, user.password);
       
-      
       const isAdmin = user.email.endsWith("@admin.com");
 
       await createUserHandle(user.firstName, credential.user.uid, user.email);
@@ -65,17 +64,51 @@ export default function Register() {
   };
 
   return (
-    <>
+    <div className="register-page">
       <h1>Register</h1>
-      <label htmlFor="firstName">First Name: </label>
-      <input value={user.firstName} onChange={updateUser('firstName')} type="text" name="firstName" id="firstName" /><br /><br />
-      <label htmlFor="lastName">Last Name: </label>
-      <input value={user.lastName} onChange={updateUser('lastName')} type="text" name="lastName" id="lastName" /><br /><br />
-      <label htmlFor="email">Email: </label>
-      <input value={user.email} onChange={updateUser('email')} type="text" name="email" id="email" /><br /><br />
-      <label htmlFor="password">Password: </label>
-      <input value={user.password} onChange={updateUser('password')} type="password" name="password" id="password" /><br />
-      <button onClick={register}>Register</button>
-    </>
+      <div className="form-section">
+        <label htmlFor="firstName">First Name: </label>
+        <input
+          className="input-field"
+          value={user.firstName}
+          onChange={updateUser('firstName')}
+          type="text"
+          name="firstName"
+          id="firstName"
+          placeholder="Enter your first name"
+        /><br />
+        <label htmlFor="lastName">Last Name: </label>
+        <input
+          className="input-field"
+          value={user.lastName}
+          onChange={updateUser('lastName')}
+          type="text"
+          name="lastName"
+          id="lastName"
+          placeholder="Enter your last name"
+        /><br />
+        <label htmlFor="email">Email: </label>
+        <input
+          className="input-field"
+          value={user.email}
+          onChange={updateUser('email')}
+          type="text"
+          name="email"
+          id="email"
+          placeholder="Enter your email"
+        /><br />
+        <label htmlFor="password">Password: </label>
+        <input
+          className="input-field"
+          value={user.password}
+          onChange={updateUser('password')}
+          type="password"
+          name="password"
+          id="password"
+          placeholder="Enter your password"
+        /><br />
+        <button className="register-btn" onClick={register}>Register</button>
+      </div>
+    </div>
   )
 }

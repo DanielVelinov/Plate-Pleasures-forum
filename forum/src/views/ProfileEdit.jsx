@@ -42,33 +42,41 @@ export default function ProfileEdit() {
     };
 
     return (
-        <div>
+        <div className="profile-edit-page">
             <h1>Edit Profile</h1>
-            <label htmlFor="firstName">First Name: </label>
-            <input
-                value={profile.firstName}
-                onChange={e => updateProfile('firstName', e.target.value)}
-                type="text"
-                name="firstName"
-                id="firstName"
-            /><br /><br />
-            <label htmlFor="lastName">Last Name: </label>
-            <input
-                value={profile.lastName}
-                onChange={e => updateProfile('lastName', e.target.value)}
-                type="text"
-                name="lastName"
-                id="lastName"
-            /><br /><br />
-            <label htmlFor="phoneNumber">Phone Number: </label>
-            <input
-                value={profile.phoneNumber}
-                onChange={e => updateProfile('phoneNumber', e.target.value)}
-                type="text"
-                name="phoneNumber"
-                id="phoneNumber"
-            /><br /><br />
-            <button onClick={handleSaveProfile}>Save</button>
+            <div className="form-section">
+                <label htmlFor="firstName">First Name: </label>
+                <input
+                    className="input-field"
+                    value={profile.firstName}
+                    onChange={e => updateProfile('firstName', e.target.value)}
+                    type="text"
+                    name="firstName"
+                    id="firstName"
+                    placeholder="Enter your first name"
+                /><br />
+                <label htmlFor="lastName">Last Name: </label>
+                <input
+                    className="input-field"
+                    value={profile.lastName}
+                    onChange={e => updateProfile('lastName', e.target.value)}
+                    type="text"
+                    name="lastName"
+                    id="lastName"
+                    placeholder="Enter your last name"
+                /><br />
+                <label htmlFor="phoneNumber">Phone Number: </label>
+                <input
+                    className="input-field"
+                    value={profile.phoneNumber}
+                    onChange={e => updateProfile('phoneNumber', e.target.value)}
+                    type="text"
+                    name="phoneNumber"
+                    id="phoneNumber"
+                    placeholder="Enter your phone number"
+                /><br />
+                <button className="save-profile-btn" onClick={handleSaveProfile}>Save</button>
+            </div>
         </div>
     );
 }

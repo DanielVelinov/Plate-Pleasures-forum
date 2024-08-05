@@ -24,13 +24,14 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="home">
-      <div className="hero">
+    <div className="home-page">
+      <div className="hero-section">
         <h1>Welcome to the Culinary Forum</h1>
         <p>Join a vibrant community of food enthusiasts!</p>
+        <button className="hero-button">Explore Recipes</button>
       </div>
 
-      <div className="features">
+      <div className="features-section">
         <h2>Core Features</h2>
         <ul>
           <li>Share your culinary creations</li>
@@ -39,7 +40,7 @@ export default function Home() {
         </ul>
       </div>
 
-      <div className="statistics">
+      <div className="statistics-section">
         <h2>Our Community</h2>
         <p><strong>Members:</strong> {userCount}</p>
         <p><strong>Posts:</strong> {postCount}</p>

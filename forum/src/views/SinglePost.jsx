@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import Post from "../components/Post";
@@ -29,8 +30,8 @@ export default function SinglePost() {
   };
 
   return (
-    <div>
-      <h1>Single post</h1>
+    <div className="single-post-page">
+      <h1>Single Post</h1>
       {post ? <Post post={post} onDelete={handleDelete} /> : <p>Loading...</p>}
     </div>
   );

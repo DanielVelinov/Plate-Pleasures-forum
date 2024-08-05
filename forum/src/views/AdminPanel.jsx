@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState, useContext } from 'react';
 import { AppContext } from '../state/app.context';
 import { getAllUsers, toggleUserBlockStatus } from '../services/users.service';
@@ -50,21 +51,25 @@ export default function AdminPanel() {
     };
 
     return (
-        <div>
+        <div className="admin-panel">
             <h1>Admin Panel</h1>
-            <label htmlFor="search">Search Users: </label>
-            <input
-                value={search}
-                onChange={e => setSearch(e.target.value)}
-                type="text"
-                name="search"
-                id="search"
-            /><br /><br />
-            <ul>
+            <div className="search-section">
+                <label htmlFor="search">Search Users: </label>
+                <input
+                    className="search-input"
+                    value={search}
+                    onChange={e => setSearch(e.target.value)}
+                    type="text"
+                    name="search"
+                    id="search"
+                    placeholder="Search by name or email"
+                />
+            </div>
+            <ul className="user-list">
                 {filteredUsers.map(user => (
-                    <li key={user.uid}>
-                        <span>{user.firstName} {user.lastName} ({user.email})</span>
-                        <button onClick={() => handleBlockToggle(user.uid)}>
+                    <li key={user.uid} className="user-item">
+                        <span className="user-info">{user.firstName} {user.lastName} ({user.email})</span>
+                        <button className="block-toggle-btn" onClick={() => handleBlockToggle(user.uid)}>
                             {user.isBlocked ? 'Unblock' : 'Block'}
                         </button>
                     </li>

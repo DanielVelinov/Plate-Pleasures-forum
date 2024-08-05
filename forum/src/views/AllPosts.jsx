@@ -73,28 +73,45 @@ export default function AllPosts() {
   };
 
   return (
-    <div>
-      <h1>Posts:</h1>
-      <div className="filters-container">
+    <div className="content">
+      <h1>Posts</h1>
+      <div className="filter-section">
         <label htmlFor="search">Search: </label>
-        <input value={search} onChange={e => setSearchParams({ search: e.target.value })} type="text" name="search" id="search" />
-
+        <input
+          className="filter-input"
+          value={search}
+          onChange={e => setSearchParams({ search: e.target.value })}
+          type="text"
+          name="search"
+          id="search"
+          placeholder="Search posts"
+        /><br />
         <label htmlFor="category">Category: </label>
-        <select value={category} onChange={handleCategoryChange} name="category" id="category">
+        <select
+          className="filter-input"
+          value={category}
+          onChange={handleCategoryChange}
+          name="category"
+          id="category"
+        >
           <option value="all">All</option>
           <option value="Soups">Soups</option>
           <option value="Salads">Salads</option>
           <option value="Main courses">Main courses</option>
           <option value="Vegetarian">Vegetarian</option>
-        </select>
-
+        </select><br />
         <label htmlFor="sort">Sort by: </label>
-        <select value={sort} onChange={handleSortChange} name="sort" id="sort">
+        <select
+          className="filter-input"
+          value={sort}
+          onChange={handleSortChange}
+          name="sort"
+          id="sort"
+        >
           <option value="newest">Newest</option>
           <option value="mostLiked">Most Liked</option>
-        </select>
+        </select><br />
       </div>
-
       {loading ? (
         <p>Loading posts...</p>
       ) : filteredPosts.length > 0 ? (
@@ -102,7 +119,7 @@ export default function AllPosts() {
           <Post key={t.id} post={t} onDelete={handleDelete} />
         ))
       ) : (
-        'No posts'
+        <p>No posts found.</p>
       )}
     </div>
   );
