@@ -20,13 +20,12 @@ export default function SinglePost() {
     });
 
     return () => {
-      // Cleanup the listener
       unsubscribe();
     };
   }, [id]);
 
   const handleDelete = () => {
-    navigate('/posts'); // Redirect to posts page after deletion
+    navigate('/posts'); 
   };
 
   return (
