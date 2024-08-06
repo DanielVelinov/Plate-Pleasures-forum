@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 // import React, { useState, useEffect, useContext } from 'react';
 // import PropTypes from 'prop-types';
 // import {
@@ -180,8 +180,7 @@
 // };
 
 // export default Comments;
-=======
->>>>>>> c3e69c58e19609a984fcaa8f8447132cb454df3d
+
 import React, { useState, useEffect, useContext } from 'react';
 import PropTypes from 'prop-types';
 import {
