@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
-import './index.css';          // Global styles
-import './App.css';            // Component specific styles
-import './styles/styles.css';  // Main CSS file for additional styles
+import './index.css';         
+import './App.css';            
+import './styles/styles.css';  
 import Home from './views/Home';
 import AllPosts from './views/AllPosts';
 import CreatePost from './views/CreatePost';

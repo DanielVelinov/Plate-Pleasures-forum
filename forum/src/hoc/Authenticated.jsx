@@ -1,4 +1,3 @@
-// Authenticated.jsx
 import PropTypes from 'prop-types';
 import { useContext } from 'react';
 import { AppContext } from '../state/app.context';
@@ -8,7 +7,7 @@ export default function Authenticated({ children }) {
   const { user, userData } = useContext(AppContext);
   const location = useLocation();
 
-  if (!user || !userData?.isAdmin) {
+  if (!user) {
     return <Navigate replace to="/login" state={{ from: location }} />
   }
 

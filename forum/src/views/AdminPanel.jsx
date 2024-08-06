@@ -9,7 +9,6 @@ export default function AdminPanel() {
     const [search, setSearch] = useState('');
     const [filteredUsers, setFilteredUsers] = useState([]);
 
-    // Fetch users if userData.isAdmin is true
     useEffect(() => {
         if (!userData?.isAdmin) {
             console.log('User is not an admin.');
@@ -29,16 +28,20 @@ export default function AdminPanel() {
         fetchUsers();
     }, [userData]);
 
-    // Filter users based on search input
     useEffect(() => {
         if (search) {
             setFilteredUsers(
-                users.filter(user =>
-                    user.firstName.toLowerCase().includes(search.toLowerCase()) ||
-                    user.lastName.toLowerCase().includes(search.toLowerCase()) ||
-                    user.email.toLowerCase().includes(search.toLowerCase()) ||
-                    user.handle.toLowerCase().includes(search.toLowerCase()) // Added username search
-                )
+                users.filter(user => {
+                    const firstName = user.firstName || '';
+                    const lastName = user.lastName || '';
+                    const email = user.email || '';
+                    const handle = user.handle || '';
+
+                    return firstName.toLowerCase().includes(search.toLowerCase()) ||
+                        lastName.toLowerCase().includes(search.toLowerCase()) ||
+                        email.toLowerCase().includes(search.toLowerCase()) ||
+                        handle.toLowerCase().includes(search.toLowerCase());
+                })
             );
         } else {
             setFilteredUsers(users);
@@ -79,7 +82,7 @@ export default function AdminPanel() {
             </div>
             <ul className="user-list">
                 {filteredUsers.map(user => (
-                    <li key={user.uid || user.email} className="user-item"> {/* Ensure each user has a unique key */}
+                    <li key={user.uid || user.email} className="user-item">
                         <span className="user-info">
                             {user.firstName} {user.lastName} ({user.email})
                         </span>
