@@ -5,6 +5,7 @@ import { getUserByHandle } from '../services/users.service';
 import Comments from './Comments';
 import EditPost from './EditPost';
 import { dislikePost, likePost, deletePost } from '../services/posts.service';
+import { Link } from 'react-router-dom';
 
 export default function Post({ post, onDelete }) {
     const { userData } = useContext(AppContext);
@@ -81,7 +82,9 @@ export default function Post({ post, onDelete }) {
 
     return (
         <div className="post-card">
-            <h3 className="post-title">{post.title}</h3>
+            <Link to={`/posts/${post.id}`}>
+                <h3 className="post-title">{post.title}</h3>
+            </Link> 
             <p className="post-category">Category: {post.category}</p>
             <p className="post-tags">Tags: {post.tags?.join(', ')}</p>
             <p className="post-content">{isExpanded ? post.content : snippet}</p>
