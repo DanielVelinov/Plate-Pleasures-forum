@@ -6,6 +6,9 @@ import {
   deleteComment,
   addReply,
   deleteReply,
+  likeComment,
+  unlikeComment,
+  getCommentLikes
 } from '../services/posts.service';
 import { getUserNameByHandle } from '../services/users.service'; 
 import { AppContext } from '../state/app.context';
@@ -15,6 +18,7 @@ const Comments = ({ postId, limit = 3, postAuthor }) => {
   const [newComment, setNewComment] = useState('');
   const [showAll, setShowAll] = useState(false);
   const [userNames, setUserNames] = useState({});
+  const [commentLikes, setCommentLikes] = useState({});
   const { userData } = useContext(AppContext);
   const [replyText, setReplyText] = useState({});
   const [showReplyInput, setShowReplyInput] = useState({});
@@ -25,6 +29,7 @@ const Comments = ({ postId, limit = 3, postAuthor }) => {
         const commentsData = await getComments(postId);
         setComments(commentsData);
         await fetchUserNames(commentsData);
+        await fetchCommentLikes(commentsData);
       } catch (error) {
         console.error('Error fetching comments:', error);
       }
@@ -50,6 +55,15 @@ const Comments = ({ postId, limit = 3, postAuthor }) => {
     setUserNames(names);
   };
 
+  const fetchCommentLikes = async (commentsData) => {
+    const likes = {};
+    await Promise.all(commentsData.map(async (comment) => {
+      const likesData = await getCommentLikes(postId, comment.id);
+      likes[comment.id] = likesData;
+    }));
+    setCommentLikes(likes);
+  };
+
   const handleAddComment = async () => {
     if (newComment.trim()) {
       try {
@@ -58,6 +72,7 @@ const Comments = ({ postId, limit = 3, postAuthor }) => {
         const commentsData = await getComments(postId);
         setComments(commentsData);
         await fetchUserNames(commentsData);
+        await fetchCommentLikes(commentsData);
       } catch (error) {
         console.error('Error adding comment:', error);
         alert('Failed to add comment. Please try again.');
@@ -85,6 +100,7 @@ const Comments = ({ postId, limit = 3, postAuthor }) => {
         const commentsData = await getComments(postId);
         setComments(commentsData);
         await fetchUserNames(commentsData);
+        await fetchCommentLikes(commentsData);
       } catch (error) {
         console.error('Error adding reply:', error);
         alert('Failed to add reply. Please try again.');
@@ -99,6 +115,7 @@ const Comments = ({ postId, limit = 3, postAuthor }) => {
         const commentsData = await getComments(postId);
         setComments(commentsData);
         await fetchUserNames(commentsData);
+        await fetchCommentLikes(commentsData);
       } catch (error) {
         console.error('Failed to delete reply:', error);
         alert('Failed to delete reply. Please try again.');
@@ -111,6 +128,28 @@ const Comments = ({ postId, limit = 3, postAuthor }) => {
       ...prevState,
       [commentId]: !prevState[commentId],
     }));
+  };
+
+  const handleLikeComment = async (commentId) => {
+    try {
+      await likeComment(postId, commentId, userData.handle);
+      const updatedLikes = await getCommentLikes(postId, commentId);
+      setCommentLikes((prev) => ({ ...prev, [commentId]: updatedLikes }));
+    } catch (error) {
+      console.error('Error liking comment:', error);
+      alert('Failed to like comment. Please try again.');
+    }
+  };
+
+  const handleUnlikeComment = async (commentId) => {
+    try {
+      await unlikeComment(postId, commentId, userData.handle);
+      const updatedLikes = await getCommentLikes(postId, commentId);
+      setCommentLikes((prev) => ({ ...prev, [commentId]: updatedLikes }));
+    } catch (error) {
+      console.error('Error unliking comment:', error);
+      alert('Failed to unlike comment. Please try again.');
+    }
   };
 
   const displayedComments = showAll ? comments : comments.slice(0, limit);
@@ -128,6 +167,14 @@ const Comments = ({ postId, limit = 3, postAuthor }) => {
               )}
               <button className="comment-reply-btn" onClick={() => handleShowReplyInput(comment.id)}>Reply</button>
             </p>
+            <div>
+              {commentLikes[comment.id] && commentLikes[comment.id][userData.handle] ? (
+                <button onClick={() => handleUnlikeComment(comment.id)}>Unlike</button>
+              ) : (
+                <button onClick={() => handleLikeComment(comment.id)}>Like</button>
+              )}
+              <span>Likes: {commentLikes[comment.id] ? Object.keys(commentLikes[comment.id]).length : 0}</span>
+            </div>
             {showReplyInput[comment.id] && (
               <div className="reply-input-section">
                 <input
