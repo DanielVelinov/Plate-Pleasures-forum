@@ -1,5 +1,3 @@
-// Comments.jsx
-
 import React, { useState, useEffect, useContext } from 'react';
 import PropTypes from 'prop-types';
 import {
@@ -119,13 +117,13 @@ const Comments = ({ postId, limit = 3, postAuthor }) => {
 
   return (
     <div className="comments-section">
-      <h3 className="comments-title">Comments</h3>
+      <h3 className="comments-title">Comments ({comments.length})</h3>
       <ul className="comments-list">
         {displayedComments.map(comment => (
           <li key={comment.id} className="comment-item">
             <p>
               <strong>{userNames[comment.userHandle] || comment.userHandle}:</strong> {comment.content}
-              {(userData.handle === comment.userHandle || userData.handle === postAuthor) && (
+              {(userData.handle === comment.userHandle || userData.handle === postAuthor || userData.isAdmin) && (
                 <button className="comment-delete-btn" onClick={() => handleDeleteComment(comment.id)}>Delete</button>
               )}
               <button className="comment-reply-btn" onClick={() => handleShowReplyInput(comment.id)}>Reply</button>
@@ -146,7 +144,7 @@ const Comments = ({ postId, limit = 3, postAuthor }) => {
               <div key={replyId} className="reply-item">
                 <p>
                   <strong>{userNames[comment.replies[replyId].userHandle] || comment.replies[replyId].userHandle}:</strong> {comment.replies[replyId].content}
-                  {(userData.handle === comment.replies[replyId].userHandle || userData.handle === postAuthor) && (
+                  {(userData.handle === comment.replies[replyId].userHandle || userData.handle === postAuthor || userData.isAdmin) && (
                     <button className="reply-delete-btn" onClick={() => handleDeleteReply(comment.id, replyId)}>Delete</button>
                   )}
                 </p>

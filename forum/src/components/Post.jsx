@@ -11,7 +11,7 @@ export default function Post({ post, onDelete }) {
     const [authorName, setAuthorName] = useState('');
     const [isExpanded, setIsExpanded] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
-    const [likedBy, setLikedBy] = useState(post.likedBy || []); // Local state for likedBy
+    const [likedBy, setLikedBy] = useState(post.likedBy || []);
 
     useEffect(() => {
         const fetchUser = async () => {
@@ -77,6 +77,8 @@ export default function Post({ post, onDelete }) {
     const formattedDate = new Date(post.createdOn).toLocaleDateString();
     const snippet = post.content.length > 100 ? `${post.content.substring(0, 100)}...` : post.content;
 
+   
+
     return (
         <div className="post-card">
             <h3 className="post-title">{post.title}</h3>
@@ -92,13 +94,14 @@ export default function Post({ post, onDelete }) {
             <button className="like-btn" onClick={toggleLike}>
                 {Array.isArray(likedBy) && likedBy.includes(userData?.handle) ? 'Dislike' : 'Like'}
             </button>
+            <span>{likedBy.length} {likedBy.length === 1 ? ' Like' : ' Likes'}</span>
             {(userData?.handle === post.author || userData?.isAdmin) && (
                 <>
                     <button className="delete-btn" onClick={handleDelete}>Delete</button>
                     <button className="edit-btn" onClick={toggleEdit}>{isEditing ? 'Cancel' : 'Edit'}</button>
                 </>
             )}
-            {isEditing && <EditPost post={post} onSave={handleSave} />}  // Render the EditPost component if editing
+            {isEditing && <EditPost post={post} onSave={handleSave} />}
             <Comments postId={post.id} postAuthor={post.author} />
             <p className="post-date">Created on: {formattedDate}</p>
         </div>
@@ -115,6 +118,10 @@ Post.propTypes = {
         category: PropTypes.string.isRequired,
         likedBy: PropTypes.arrayOf(PropTypes.string),
         tags: PropTypes.arrayOf(PropTypes.string),
+        comments: PropTypes.object,
     }).isRequired,
     onDelete: PropTypes.func,
 };
+
+
+
