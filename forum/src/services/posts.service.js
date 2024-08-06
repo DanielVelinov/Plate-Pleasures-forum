@@ -157,3 +157,46 @@ export const getPostById = async (id) => {
         throw new Error('Unable to fetch post.');
     }
 };
+
+export const addReply = async (postId, commentId, content, userHandle) => {
+    const reply = { content, userHandle, timestamp: new Date().toISOString() };
+    const repliesRef = dbRef(db, `posts/${postId}/comments/${commentId}/replies`);
+    const newReplyRef = push(repliesRef);
+
+    try {
+        await set(newReplyRef, reply);
+        console.log('Reply added successfully:', reply);
+    } catch (error) {
+        console.error('Error adding reply:', error);
+        throw new Error('Unable to add reply.');
+    }
+};
+
+export const getReplies = async (postId, commentId) => {
+    const repliesRef = dbRef(db, `posts/${postId}/comments/${commentId}/replies`);
+
+    try {
+        const snapshot = await get(repliesRef);
+        if (!snapshot.exists()) return [];
+
+        const replies = snapshot.val();
+        return Object.keys(replies).map(key => ({
+            id: key,
+            ...replies[key],
+        }));
+    } catch (error) {
+        console.error('Error fetching replies:', error);
+        throw new Error('Unable to fetch replies.');
+    }
+};
+
+
+export const deleteReply = async (postId, commentId, replyId) => {
+    try {
+        await remove(dbRef(db, `posts/${postId}/comments/${commentId}/replies/${replyId}`));
+        console.log('Reply deleted successfully:', replyId);
+    } catch (error) {
+        console.error('Error deleting reply:', error);
+        throw new Error('Failed to delete reply.');
+    }
+};

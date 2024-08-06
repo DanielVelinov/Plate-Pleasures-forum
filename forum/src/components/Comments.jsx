@@ -1,8 +1,14 @@
-
+// Comments.jsx
 
 import React, { useState, useEffect, useContext } from 'react';
 import PropTypes from 'prop-types';
-import { getComments, addComment, deleteComment } from '../services/posts.service';
+import {
+  getComments,
+  addComment,
+  deleteComment,
+  addReply,
+  deleteReply,
+} from '../services/posts.service';
 import { getUserNameByHandle } from '../services/users.service'; 
 import { AppContext } from '../state/app.context';
 
@@ -12,6 +18,8 @@ const Comments = ({ postId, limit = 3, postAuthor }) => {
   const [showAll, setShowAll] = useState(false);
   const [userNames, setUserNames] = useState({});
   const { userData } = useContext(AppContext);
+  const [replyText, setReplyText] = useState({});
+  const [showReplyInput, setShowReplyInput] = useState({});
 
   useEffect(() => {
     const fetchComments = async () => {
@@ -28,7 +36,11 @@ const Comments = ({ postId, limit = 3, postAuthor }) => {
   }, [postId]);
 
   const fetchUserNames = async (commentsData) => {
-    const handles = commentsData.map(comment => comment.userHandle);
+    const handles = commentsData.flatMap(comment => [
+      comment.userHandle,
+      ...Object.values(comment.replies || {}).map(reply => reply.userHandle)
+    ]);
+
     const uniqueHandles = [...new Set(handles)];
     const names = {};
 
@@ -47,7 +59,7 @@ const Comments = ({ postId, limit = 3, postAuthor }) => {
         setNewComment('');
         const commentsData = await getComments(postId);
         setComments(commentsData);
-        await fetchUserNames(commentsData); // Извикваме функцията за извличане на имена
+        await fetchUserNames(commentsData);
       } catch (error) {
         console.error('Error adding comment:', error);
         alert('Failed to add comment. Please try again.');
@@ -67,6 +79,42 @@ const Comments = ({ postId, limit = 3, postAuthor }) => {
     }
   };
 
+  const handleAddReply = async (commentId) => {
+    if (replyText[commentId]?.trim()) {
+      try {
+        await addReply(postId, commentId, replyText[commentId], userData.handle);
+        setReplyText(prev => ({ ...prev, [commentId]: '' }));
+        const commentsData = await getComments(postId);
+        setComments(commentsData);
+        await fetchUserNames(commentsData);
+      } catch (error) {
+        console.error('Error adding reply:', error);
+        alert('Failed to add reply. Please try again.');
+      }
+    }
+  };
+
+  const handleDeleteReply = async (commentId, replyId) => {
+    if (window.confirm('Are you sure you want to delete this reply?')) {
+      try {
+        await deleteReply(postId, commentId, replyId);
+        const commentsData = await getComments(postId);
+        setComments(commentsData);
+        await fetchUserNames(commentsData);
+      } catch (error) {
+        console.error('Failed to delete reply:', error);
+        alert('Failed to delete reply. Please try again.');
+      }
+    }
+  };
+
+  const handleShowReplyInput = (commentId) => {
+    setShowReplyInput((prevState) => ({
+      ...prevState,
+      [commentId]: !prevState[commentId],
+    }));
+  };
+
   const displayedComments = showAll ? comments : comments.slice(0, limit);
 
   return (
@@ -80,7 +128,30 @@ const Comments = ({ postId, limit = 3, postAuthor }) => {
               {(userData.handle === comment.userHandle || userData.handle === postAuthor) && (
                 <button className="comment-delete-btn" onClick={() => handleDeleteComment(comment.id)}>Delete</button>
               )}
+              <button className="comment-reply-btn" onClick={() => handleShowReplyInput(comment.id)}>Reply</button>
             </p>
+            {showReplyInput[comment.id] && (
+              <div className="reply-input-section">
+                <input
+                  type="text"
+                  className="reply-input"
+                  value={replyText[comment.id] || ''}
+                  onChange={(e) => setReplyText((prev) => ({ ...prev, [comment.id]: e.target.value }))}
+                  placeholder="Add a reply"
+                />
+                <button className="add-reply-btn" onClick={() => handleAddReply(comment.id)}>Reply</button>
+              </div>
+            )}
+            {comment.replies && Object.keys(comment.replies).map(replyId => (
+              <div key={replyId} className="reply-item">
+                <p>
+                  <strong>{userNames[comment.replies[replyId].userHandle] || comment.replies[replyId].userHandle}:</strong> {comment.replies[replyId].content}
+                  {(userData.handle === comment.replies[replyId].userHandle || userData.handle === postAuthor) && (
+                    <button className="reply-delete-btn" onClick={() => handleDeleteReply(comment.id, replyId)}>Delete</button>
+                  )}
+                </p>
+              </div>
+            ))}
           </li>
         ))}
       </ul>

@@ -413,3 +413,53 @@ footer {
     display: block;
     color: var(--text-color);
 }
+/* styles.css */
+
+.comments-section .reply-input-section {
+    margin-top: 10px;
+    margin-left: 20px;
+}
+
+.comments-section .reply-input {
+    padding: 5px;
+    margin-right: 5px;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+    width: calc(100% - 80px);
+}
+
+.comments-section .add-reply-btn {
+    background-color: var(--button-bg-color);
+    color: var(--text-color);
+    border: none;
+    border-radius: 4px;
+    padding: 5px 10px;
+    cursor: pointer;
+    transition: background-color var(--transition);
+}
+
+.comments-section .add-reply-btn:hover {
+    background-color: var(--button-bg-hover-color);
+}
+
+.comments-section .reply-item {
+    margin-left: 20px;
+    margin-top: 5px;
+    padding: 5px;
+    background-color: var(--secondary-bg-color);
+    border-radius: 4px;
+    color: var(--text-secondary-color);
+}
+
+.comments-section .reply-delete-btn {
+    background-color: transparent;
+    color: var(--text-secondary-color);
+    border: none;
+    margin-left: 10px;
+    cursor: pointer;
+    transition: color var(--transition);
+}
+
+.comments-section .reply-delete-btn:hover {
+    color: var(--button-bg-hover-color);
+}
