@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getPostById, deletePost, likePost, dislikePost } from '../services/posts.service';
-import Comments from './Comments';
+import Comments from '../components/Comments';
 import { useContext } from 'react';
 import { AppContext } from '../state/app.context';
 
