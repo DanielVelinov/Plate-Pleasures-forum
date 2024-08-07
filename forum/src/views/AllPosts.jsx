@@ -1,7 +1,8 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { getAllPosts } from "../services/posts.service";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import Post from '../components/Post';
+import debounce from 'lodash/debounce';
 
 export default function AllPosts() {
     const [posts, setPosts] = useState([]);
@@ -13,38 +14,41 @@ export default function AllPosts() {
     const [category, setCategory] = useState('all');
     const [sort, setSort] = useState('newest');
 
-    useEffect(() => {
-        const fetchPosts = async () => {
-            setLoading(true);
-            try {
-                const postsData = await getAllPosts(search);
-                console.log('Fetched Posts:', postsData); // Debug: log fetched posts
-                const transformedPosts = postsData.map(post => ({
-                    ...post,
-                    likedBy: Array.isArray(post.likedBy) ? post.likedBy : Object.keys(post.likedBy ?? {}),
-                    comments: post.comments || {},
-                    createdOn: post.createdOn || new Date().toISOString(),
-                }));
-                setPosts(transformedPosts);
-            } catch (error) {
-                console.error('Failed to fetch posts:', error);
-                alert('Failed to fetch posts. Please try again.');
-            } finally {
-                setLoading(false);
-            }
-        };
+    const fetchPosts = async (searchTerm) => {
+        setLoading(true);
+        try {
+            const postsData = await getAllPosts(searchTerm);
+            console.log('Fetched Posts:', postsData); 
+            const transformedPosts = postsData.map(post => ({
+                ...post,
+                likedBy: Array.isArray(post.likedBy) ? post.likedBy : Object.keys(post.likedBy ?? {}),
+                dislikedBy: Array.isArray(post.dislikedBy) ? post.dislikedBy : Object.keys(post.dislikedBy ?? {}), 
+                comments: post.comments || {},
+                createdOn: post.createdOn || new Date().toISOString(),
+            }));
+            setPosts(transformedPosts);
+        } catch (error) {
+            console.error('Failed to fetch posts:', error);
+            alert('Failed to fetch posts. Please try again.');
+        } finally {
+            setLoading(false);
+        }
+    };
 
-        fetchPosts();
+    const debouncedFetchPosts = useCallback(debounce((searchTerm) => {
+        fetchPosts(searchTerm);
+    }, 300), []);
+
+    useEffect(() => {
+        debouncedFetchPosts(search);
     }, [search]);
 
     useEffect(() => {
         filterPosts(posts, category, sort);
     }, [category, posts, sort]);
 
-    const setSearch = (value) => {
-        setSearchParams({
-            search: value,
-        });
+    const handleSearchChange = (event) => {
+        setSearchParams({ search: event.target.value });
     };
 
     const filterPosts = (posts, category, sort) => {
@@ -83,7 +87,7 @@ export default function AllPosts() {
             <h1>Posts</h1>
             <div className="filters-container">
                 <label htmlFor="search">Search: </label>
-                <input value={search} onChange={e => setSearchParams({ search: e.target.value })} type="text" name="search" id="search" />
+                <input value={search} onChange={handleSearchChange} type="text" name="search" id="search" />
 
                 <label htmlFor="category">Category: </label>
                 <select value={category} onChange={handleCategoryChange} name="category" id="category">
