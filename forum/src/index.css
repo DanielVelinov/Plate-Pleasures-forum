@@ -52,3 +52,15 @@ body {
 .filters-container select {
   margin-right: 15px; 
 }
+.like-btn, .dislike-btn {
+  background-color: green;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  margin-right: 10px;
+}
+
+.like-btn.active, .dislike-btn.active {
+  background-color: red;
+}

@@ -120,8 +120,8 @@ export const likePost = async (handle, postId) => {
 
 export const dislikePost = async (handle, postId) => {
     const updateObject = {
-        [`posts/${postId}/likedBy/${handle}`]: null,
-        [`users/${handle}/likedPosts/${postId}`]: null,
+        [`posts/${postId}/dislikedBy/${handle}`]: true,
+        [`users/${handle}/dislikedPosts/${postId}`]: true,
     };
 
     try {
@@ -130,6 +130,36 @@ export const dislikePost = async (handle, postId) => {
     } catch (error) {
         console.error('Error disliking post:', error);
         throw new Error('Unable to dislike post.');
+    }
+};
+
+export const unlikePost = async (handle, postId) => {
+    const updateObject = {
+        [`posts/${postId}/likedBy/${handle}`]: null,
+        [`users/${handle}/likedPosts/${postId}`]: null,
+    };
+
+    try {
+        await update(dbRef(db), updateObject);
+        console.log(`Post ${postId} unliked by user ${handle}`);
+    } catch (error) {
+        console.error('Error unliking post:', error);
+        throw new Error('Unable to unlike post.');
+    }
+};
+
+export const undislikePost = async (handle, postId) => {
+    const updateObject = {
+        [`posts/${postId}/dislikedBy/${handle}`]: null,
+        [`users/${handle}/dislikedPosts/${postId}`]: null,
+    };
+
+    try {
+        await update(dbRef(db), updateObject);
+        console.log(`Post ${postId} undisliked by user ${handle}`);
+    } catch (error) {
+        console.error('Error undisliking post:', error);
+        throw new Error('Unable to undislike post.');
     }
 };
 

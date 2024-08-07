@@ -1,11 +1,10 @@
-
 import PropTypes from 'prop-types';
 import { useContext, useEffect, useState } from 'react';
 import { AppContext } from '../state/app.context';
 import { getUserByHandle } from '../services/users.service';
 import Comments from './Comments';
 import EditPost from './EditPost';
-import { dislikePost, likePost, deletePost } from '../services/posts.service';
+import { dislikePost, likePost, unlikePost, undislikePost, deletePost } from '../services/posts.service';
 import { Link } from 'react-router-dom';
 
 export default function Post({ post, onDelete }) {
@@ -14,6 +13,7 @@ export default function Post({ post, onDelete }) {
     const [isExpanded, setIsExpanded] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
     const [likedBy, setLikedBy] = useState(post.likedBy || []);
+    const [dislikedBy, setDislikedBy] = useState(post.dislikedBy || []);
 
     useEffect(() => {
         const fetchUser = async () => {
@@ -34,25 +34,51 @@ export default function Post({ post, onDelete }) {
             return;
         }
 
-
-        if (userData.isBlocked) {
-            alert('Your account is blocked. You cannot like posts.');
-            return;
-        }
-
         const isLiked = Array.isArray(likedBy) && likedBy.includes(userData.handle);
+        const isDisliked = Array.isArray(dislikedBy) && dislikedBy.includes(userData.handle);
 
         try {
             if (isLiked) {
-                await dislikePost(userData.handle, post.id);
+                await unlikePost(userData.handle, post.id);
                 setLikedBy(likedBy.filter(handle => handle !== userData.handle));
             } else {
                 await likePost(userData.handle, post.id);
                 setLikedBy([...likedBy, userData.handle]);
+                if (isDisliked) {
+                    await undislikePost(userData.handle, post.id);
+                    setDislikedBy(dislikedBy.filter(handle => handle !== userData.handle));
+                }
             }
         } catch (error) {
             console.error('Failed to toggle like:', error);
             alert('Failed to like/dislike post. Please try again.');
+        }
+    };
+
+    const toggleDislike = async () => {
+        if (!userData) {
+            alert('You must be logged in to dislike a post.');
+            return;
+        }
+
+        const isLiked = Array.isArray(likedBy) && likedBy.includes(userData.handle);
+        const isDisliked = Array.isArray(dislikedBy) && dislikedBy.includes(userData.handle);
+
+        try {
+            if (isDisliked) {
+                await undislikePost(userData.handle, post.id);
+                setDislikedBy(dislikedBy.filter(handle => handle !== userData.handle));
+            } else {
+                await dislikePost(userData.handle, post.id);
+                setDislikedBy([...dislikedBy, userData.handle]);
+                if (isLiked) {
+                    await unlikePost(userData.handle, post.id);
+                    setLikedBy(likedBy.filter(handle => handle !== userData.handle));
+                }
+            }
+        } catch (error) {
+            console.error('Failed to toggle dislike:', error);
+            alert('Failed to dislike post. Please try again.');
         }
     };
 
@@ -85,8 +111,6 @@ export default function Post({ post, onDelete }) {
     const formattedDate = new Date(post.createdOn).toLocaleDateString();
     const snippet = post.content.length > 100 ? `${post.content.substring(0, 100)}...` : post.content;
 
-
-
     return (
         <div className="post-card">
             <Link to={`/posts/${post.id}`}>
@@ -101,10 +125,20 @@ export default function Post({ post, onDelete }) {
                 </button>
             )}
             <p className="post-author">Posted By: {authorName} on {formattedDate}</p>
-            <button className="like-btn" onClick={toggleLike}>
-                {Array.isArray(likedBy) && likedBy.includes(userData?.handle) ? 'Dislike' : 'Like'}
+            <button
+                className={`like-btn ${Array.isArray(likedBy) && likedBy.includes(userData?.handle) ? 'active' : ''}`}
+                onClick={toggleLike}
+            >
+                Like
             </button>
-            <span>{likedBy.length} {likedBy.length === 1 ? ' Like' : ' Likes'}</span>
+            <span>{likedBy.length} {likedBy.length === 1 ? 'Like' : 'Likes'}</span>
+            <button
+                className={`dislike-btn ${Array.isArray(dislikedBy) && dislikedBy.includes(userData?.handle) ? 'active' : ''}`}
+                onClick={toggleDislike}
+            >
+                Dislike
+            </button>
+            <span>{dislikedBy.length} {dislikedBy.length === 1 ? 'Dislike' : 'Dislikes'}</span>
             {(userData?.handle === post.author || userData?.isAdmin) && (
                 <>
                     <button className="delete-btn" onClick={handleDelete}>Delete</button>
@@ -125,13 +159,10 @@ Post.propTypes = {
         title: PropTypes.string.isRequired,
         content: PropTypes.string.isRequired,
         createdOn: PropTypes.string.isRequired,
-        category: PropTypes.string.isRequired,
         likedBy: PropTypes.arrayOf(PropTypes.string),
+        dislikedBy: PropTypes.arrayOf(PropTypes.string),
+        category: PropTypes.string,
         tags: PropTypes.arrayOf(PropTypes.string),
-        comments: PropTypes.object,
     }).isRequired,
     onDelete: PropTypes.func,
 };
-
-
-
