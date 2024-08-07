@@ -1,6 +1,7 @@
+// Sidebar.jsx
 import React, { useContext } from 'react';
 import { NavLink } from 'react-router-dom';
-import { FaHome, FaClipboardList, FaPlus, FaSignOutAlt, FaUserShield } from 'react-icons/fa';
+import { FaHome, FaClipboardList, FaPlus, FaSignOutAlt, FaUserShield, FaUser } from 'react-icons/fa'; // Add FaUser for profile
 import { AppContext } from '../state/app.context';
 import { logoutUser } from '../services/auth.service';
 import { useNavigate } from "react-router-dom";
@@ -61,15 +62,26 @@ export default function Sidebar() {
                 </div>
             )}
             {user && (
-                <div className="sidebar-icon-container">
-                    <button
-                        className="sidebar-icon"
-                        onClick={logout}
-                    >
-                        <FaSignOutAlt />
-                        <span className="tooltip">Logout</span>
-                    </button>
-                </div>
+                <>
+                    <div className="sidebar-icon-container">
+                        <NavLink
+                            to="/profile"  // Route to the profile page
+                            className={({ isActive }) => (isActive ? 'sidebar-icon active' : 'sidebar-icon')}
+                        >
+                            <FaUser />
+                            <span className="tooltip">Profile</span>
+                        </NavLink>
+                    </div>
+                    <div className="sidebar-icon-container">
+                        <button
+                            className="sidebar-icon"
+                            onClick={logout}
+                        >
+                            <FaSignOutAlt />
+                            <span className="tooltip">Logout</span>
+                        </button>
+                    </div>
+                </>
             )}
         </div>
     );

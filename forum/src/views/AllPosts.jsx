@@ -18,10 +18,12 @@ export default function AllPosts() {
             setLoading(true);
             try {
                 const postsData = await getAllPosts(search);
+                console.log('Fetched Posts:', postsData); // Debug: log fetched posts
                 const transformedPosts = postsData.map(post => ({
                     ...post,
                     likedBy: Array.isArray(post.likedBy) ? post.likedBy : Object.keys(post.likedBy ?? {}),
                     comments: post.comments || {},
+                    createdOn: post.createdOn || new Date().toISOString(),
                 }));
                 setPosts(transformedPosts);
             } catch (error) {
@@ -51,13 +53,17 @@ export default function AllPosts() {
             filtered = filtered.filter(post => post.category === category);
         }
 
+        console.log('Before Sorting:', filtered); // Debugging line
+
         if (sort === 'mostLiked') {
-            filtered = filtered.sort((a, b) => b.likedBy.length - a.likedBy.length);
+            filtered.sort((a, b) => b.likedBy.length - a.likedBy.length);
         } else if (sort === 'newest') {
-            filtered = filtered.sort((a, b) => new Date(b.createdOn) - new Date(a.createdOn));
+            filtered.sort((a, b) => new Date(b.createdOn) - new Date(a.createdOn));
         }
 
-        setFilteredPosts(filtered);
+        console.log('After Sorting:', filtered); // Debugging line
+
+        setFilteredPosts([...filtered]); // Ensure new array reference for state update
     };
 
     const handleCategoryChange = (event) => {
@@ -76,24 +82,24 @@ export default function AllPosts() {
         <div className="content">
             <h1>Posts</h1>
             <div className="filters-container">
-        <label htmlFor="search">Search: </label>
-        <input value={search} onChange={e => setSearchParams({ search: e.target.value })} type="text" name="search" id="search" />
+                <label htmlFor="search">Search: </label>
+                <input value={search} onChange={e => setSearchParams({ search: e.target.value })} type="text" name="search" id="search" />
 
-        <label htmlFor="category">Category: </label>
-        <select value={category} onChange={handleCategoryChange} name="category" id="category">
-          <option value="all">All</option>
-          <option value="Soups">Soups</option>
-          <option value="Salads">Salads</option>
-          <option value="Main courses">Main courses</option>
-          <option value="Vegetarian">Vegetarian</option>
-        </select>
+                <label htmlFor="category">Category: </label>
+                <select value={category} onChange={handleCategoryChange} name="category" id="category">
+                    <option value="all">All</option>
+                    <option value="Soups">Soups</option>
+                    <option value="Salads">Salads</option>
+                    <option value="Main courses">Main courses</option>
+                    <option value="Vegetarian">Vegetarian</option>
+                </select>
 
-        <label htmlFor="sort">Sort by: </label>
-        <select value={sort} onChange={handleSortChange} name="sort" id="sort">
-          <option value="newest">Newest</option>
-          <option value="mostLiked">Most Liked</option>
-        </select>
-      </div>
+                <label htmlFor="sort">Sort by: </label>
+                <select value={sort} onChange={handleSortChange} name="sort" id="sort">
+                    <option value="newest">Newest</option>
+                    <option value="mostLiked">Most Liked</option>
+                </select>
+            </div>
             {loading ? (
                 <p>Loading posts...</p>
             ) : filteredPosts.length > 0 ? (

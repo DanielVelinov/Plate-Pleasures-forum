@@ -7,7 +7,7 @@ import AllPosts from './views/AllPosts';
 import CreatePost from './views/CreatePost';
 import Header from './components/Header';
 import Sidebar from './components/Sidebar';
-import Profile from './components/Profile';
+import Profile from './components/Profile'; 
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import NotFound from './views/NotFound';
 import SinglePost from './views/SinglePost';
@@ -41,7 +41,6 @@ function App() {
         const data = await getUserData(user.uid);
         const userData = data[Object.keys(data)[0]];
 
-        // Check if userData contains isAdmin and log for debugging
         console.log('User data fetched:', userData);
 
         setAppState((prevState) => ({ ...prevState, userData }));
@@ -59,13 +58,13 @@ function App() {
         <Header />
         <Sidebar />
         <div className="content">
-          <Profile />
           <Routes>
             <Route path='/' element={<Home />} />
             <Route path='/posts' element={<Authenticated><AllPosts /></Authenticated>} />
             <Route path='/posts/:id' element={<Authenticated><SinglePost /></Authenticated>} />
             <Route path='/posts-create' element={<Authenticated><CreatePost /></Authenticated>} />
             <Route path='/admin' element={<Authenticated><AdminPanel /></Authenticated>} />
+            <Route path='/profile' element={<Authenticated><Profile /></Authenticated>} /> {/* Profile route */}
             <Route path='/login' element={<Login />} />
             <Route path='/register' element={<Register />} />
             <Route path='*' element={<NotFound />} />

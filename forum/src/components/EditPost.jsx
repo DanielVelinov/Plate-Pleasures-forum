@@ -125,7 +125,7 @@ EditPost.propTypes = {
         title: PropTypes.string.isRequired,
         content: PropTypes.string.isRequired,
         category: PropTypes.string.isRequired,
-        tags: PropTypes.arrayOf(PropTypes.string), // Added PropTypes for tags
+        tags: PropTypes.arrayOf(PropTypes.string), 
     }).isRequired,
     onSave: PropTypes.func.isRequired,
 };

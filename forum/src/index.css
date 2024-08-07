@@ -40,15 +40,15 @@ body {
 .filters-container {
   display: flex;
   align-items: center;
-  gap: 10px; /* Adjust space between elements */
-  margin-bottom: 20px; /* Adjust space below the filters */
+  gap: 10px; 
+  margin-bottom: 20px; 
 }
 
 .filters-container label {
-  margin-right: 5px; /* Space between label and input/select */
+  margin-right: 5px; 
 }
 
 .filters-container input,
 .filters-container select {
-  margin-right: 15px; /* Space between inputs/selects */
+  margin-right: 15px; 
 }

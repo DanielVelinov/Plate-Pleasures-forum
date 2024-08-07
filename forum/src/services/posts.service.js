@@ -16,7 +16,7 @@ export const getAllPosts = async (search = '') => {
         if (search) {
             return posts.filter(
                 post => post.title.toLowerCase().includes(search.toLowerCase()) ||
-                    post.tags.some(tag => tag.includes(search.toLowerCase())) // Search by tag
+                    (Array.isArray(post.tags) && post.tags.some(tag => tag.includes(search.toLowerCase()))) // Safe check
             );
         }
 
@@ -26,6 +26,7 @@ export const getAllPosts = async (search = '') => {
         throw new Error('Unable to fetch posts.');
     }
 };
+
 
 export const createPost = async (author, title, content, category, tags = []) => {
     const post = {
@@ -202,35 +203,35 @@ export const deleteReply = async (postId, commentId, replyId) => {
 };
 
 export const likeComment = async (postId, commentId, userHandle) => {
-  const likesRef = dbRef(db, `posts/${postId}/comments/${commentId}/likes/${userHandle}`);
-  try {
-    await set(likesRef, true);
-    console.log(`Comment ${commentId} liked by user ${userHandle}`);
-  } catch (error) {
-    console.error('Error liking comment:', error);
-    throw new Error('Unable to like comment.');
-  }
+    const likesRef = dbRef(db, `posts/${postId}/comments/${commentId}/likes/${userHandle}`);
+    try {
+        await set(likesRef, true);
+        console.log(`Comment ${commentId} liked by user ${userHandle}`);
+    } catch (error) {
+        console.error('Error liking comment:', error);
+        throw new Error('Unable to like comment.');
+    }
 };
 
 export const unlikeComment = async (postId, commentId, userHandle) => {
-  const likesRef = dbRef(db, `posts/${postId}/comments/${commentId}/likes/${userHandle}`);
-  try {
-    await remove(likesRef);
-    console.log(`Comment ${commentId} unliked by user ${userHandle}`);
-  } catch (error) {
-    console.error('Error unliking comment:', error);
-    throw new Error('Unable to unlike comment.');
-  }
+    const likesRef = dbRef(db, `posts/${postId}/comments/${commentId}/likes/${userHandle}`);
+    try {
+        await remove(likesRef);
+        console.log(`Comment ${commentId} unliked by user ${userHandle}`);
+    } catch (error) {
+        console.error('Error unliking comment:', error);
+        throw new Error('Unable to unlike comment.');
+    }
 };
 
 export const getCommentLikes = async (postId, commentId) => {
-  const likesRef = dbRef(db, `posts/${postId}/comments/${commentId}/likes`);
-  try {
-    const snapshot = await get(likesRef);
-    if (!snapshot.exists()) return {};
-    return snapshot.val();
-  } catch (error) {
-    console.error('Error fetching comment likes:', error);
-    throw new Error('Unable to fetch comment likes.');
-  }
+    const likesRef = dbRef(db, `posts/${postId}/comments/${commentId}/likes`);
+    try {
+        const snapshot = await get(likesRef);
+        if (!snapshot.exists()) return {};
+        return snapshot.val();
+    } catch (error) {
+        console.error('Error fetching comment likes:', error);
+        throw new Error('Unable to fetch comment likes.');
+    }
 };

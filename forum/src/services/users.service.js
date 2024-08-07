@@ -1,7 +1,6 @@
 import { get, set, ref, query, equalTo, orderByChild, update } from 'firebase/database';
 import { db } from '../config/firebase-config';
 
-
 export const getUserByHandle = async (handle) => {
   try {
     const snapshot = await get(ref(db, `users/${handle}`));
@@ -12,7 +11,6 @@ export const getUserByHandle = async (handle) => {
   }
 };
 
-
 export const createUserHandle = async (handle, uid, email) => {
   const user = { handle, uid, email, createdOn: new Date().toString() };
   try {
@@ -22,7 +20,6 @@ export const createUserHandle = async (handle, uid, email) => {
     throw new Error('Unable to create user handle.');
   }
 };
-
 
 export const getUserData = async (uid) => {
   try {
@@ -37,7 +34,6 @@ export const getUserData = async (uid) => {
   }
 };
 
-
 export const getUserNameByHandle = async (handle) => {
   try {
     const user = await getUserByHandle(handle);
@@ -48,14 +44,14 @@ export const getUserNameByHandle = async (handle) => {
   }
 };
 
-
-export const saveUserDetails = async ({ uid, email, firstName, lastName, phoneNumber = null, isAdmin = false }) => {
+export const saveUserDetails = async ({ uid, email, firstName, lastName, phoneNumber = null, profilePicture = null, isAdmin = false }) => {
   try {
     await set(ref(db, `users/${uid}`), {
       email,
       firstName,
       lastName,
       phoneNumber,
+      profilePicture, 
       createdOn: new Date().toISOString(),
       isAdmin 
     });
@@ -64,8 +60,6 @@ export const saveUserDetails = async ({ uid, email, firstName, lastName, phoneNu
     throw new Error('Unable to save user details.');
   }
 };
-
-
 
 export const getAllUsers = async () => {
   try {
@@ -79,7 +73,6 @@ export const getAllUsers = async () => {
     throw new Error('Unable to fetch users.');
   }
 };
-
 
 export const toggleUserBlockStatus = async (userHandle, blockStatus) => {
   try {

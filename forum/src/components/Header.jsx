@@ -2,7 +2,7 @@ import { useContext } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { AppContext } from "../state/app.context";
 import { logoutUser } from "../services/auth.service";
-import logo from '../assets/profile-picture.jpg/Logo.png'; // Ensure the path is correct
+import logo from '../assets/profile-picture.jpg/Logo.png'; 
 
 export default function Header() {
   const { user, userData, setAppState } = useContext(AppContext);
@@ -32,8 +32,9 @@ export default function Header() {
             <>
               <NavLink to="/posts">All posts</NavLink>
               <NavLink to="/posts-create">Create post</NavLink>
-              {userData?.isAdmin && ( // Check if user is an admin
-                <NavLink to="/admin">Admin Panel</NavLink> // Admin button
+              <NavLink to="/profile">Profile</NavLink> {/* Profile button added here */}
+              {userData?.isAdmin && ( 
+                <NavLink to="/admin">Admin Panel</NavLink> 
               )}
             </>
           )}
