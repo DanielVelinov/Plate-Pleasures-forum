@@ -2,9 +2,7 @@ import React, { useState, useContext } from 'react';
 import { AppContext } from '../state/app.context';
 import { saveUserDetails } from '../services/users.service';
 import defaultProfilePicture from '../assets/profile-picture.jpg/profilePicture.png';
-
-import { uploadProfilePhoto } from '../services/storage.service'; 
-
+import { uploadProfilePhoto } from '../services/storage.service';
 
 export default function Profile() {
     const { user, userData, setAppState } = useContext(AppContext);
@@ -12,7 +10,7 @@ export default function Profile() {
         firstName: userData.firstName || '',
         lastName: userData.lastName || '',
         phoneNumber: userData.phoneNumber || '',
-        profilePicture: userData.profilePicture || null, 
+        profilePicture: userData.profilePicture || defaultProfilePicture, 
     });
     const [newProfilePicture, setNewProfilePicture] = useState(null);
 
@@ -31,15 +29,17 @@ export default function Profile() {
 
         try {
             let profilePictureUrl = profile.profilePicture;
+
             if (newProfilePicture) {
                 profilePictureUrl = await uploadProfilePhoto(user.uid, newProfilePicture);
+                console.log('New profile picture uploaded:', profilePictureUrl);
             }
 
             await saveUserDetails({
                 uid: user.uid,
                 email: user.email,
                 ...profile,
-                profilePicture: profilePictureUrl, 
+                profilePicture: profilePictureUrl,
             });
 
             setAppState(prevState => ({
@@ -49,6 +49,11 @@ export default function Profile() {
                     ...profile,
                     profilePicture: profilePictureUrl,
                 },
+            }));
+
+            setProfile(prevProfile => ({
+                ...prevProfile,
+                profilePicture: profilePictureUrl,
             }));
 
             alert('Profile updated successfully!');
