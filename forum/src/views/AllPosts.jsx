@@ -2,7 +2,6 @@ import { useEffect, useState, useCallback } from "react";
 import { getAllPosts } from "../services/posts.service";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import Post from '../components/Post';
-import debounce from 'lodash/debounce';
 
 export default function AllPosts() {
     const [posts, setPosts] = useState([]);
@@ -13,6 +12,7 @@ export default function AllPosts() {
     const search = searchParams.get('search') ?? '';
     const [category, setCategory] = useState('all');
     const [sort, setSort] = useState('newest');
+    const [searchTerm, setSearchTerm] = useState(search); // Държим стойността на полето за търсене
 
     const fetchPosts = async (searchTerm) => {
         setLoading(true);
@@ -27,6 +27,7 @@ export default function AllPosts() {
                 createdOn: post.createdOn || new Date().toISOString(),
             }));
             setPosts(transformedPosts);
+            filterPosts(transformedPosts, category, sort); // Приложете филтрирането върху заредените публикации
         } catch (error) {
             console.error('Failed to fetch posts:', error);
             alert('Failed to fetch posts. Please try again.');
@@ -35,20 +36,23 @@ export default function AllPosts() {
         }
     };
 
-    const debouncedFetchPosts = useCallback(debounce((searchTerm) => {
-        fetchPosts(searchTerm);
-    }, 300), []);
-
     useEffect(() => {
-        debouncedFetchPosts(search);
-    }, [search]);
-
-    useEffect(() => {
-        filterPosts(posts, category, sort);
-    }, [category, posts, sort]);
+        fetchPosts(search); // Зарежда публикации веднага след зареждане на страницата
+    }, []);
 
     const handleSearchChange = (event) => {
-        setSearchParams({ search: event.target.value });
+        setSearchTerm(event.target.value);
+    };
+
+    const handleSearchSubmit = () => {
+        setSearchParams({ search: searchTerm });
+        fetchPosts(searchTerm);
+    };
+
+    const handleKeyDown = (event) => {
+        if (event.key === 'Enter') {
+            handleSearchSubmit();
+        }
     };
 
     const filterPosts = (posts, category, sort) => {
@@ -57,29 +61,28 @@ export default function AllPosts() {
             filtered = filtered.filter(post => post.category === category);
         }
 
-        console.log('Before Sorting:', filtered); // Debugging line
-
         if (sort === 'mostLiked') {
             filtered.sort((a, b) => b.likedBy.length - a.likedBy.length);
         } else if (sort === 'newest') {
             filtered.sort((a, b) => new Date(b.createdOn) - new Date(a.createdOn));
         }
 
-        console.log('After Sorting:', filtered); // Debugging line
-
-        setFilteredPosts([...filtered]); // Ensure new array reference for state update
+        setFilteredPosts([...filtered]); 
     };
 
     const handleCategoryChange = (event) => {
         setCategory(event.target.value);
+        filterPosts(posts, event.target.value, sort); // Актуализирайте филтрирането
     };
 
     const handleSortChange = (event) => {
         setSort(event.target.value);
+        filterPosts(posts, category, event.target.value); // Актуализирайте филтрирането
     };
 
     const handleDelete = (postId) => {
         setPosts(posts.filter(post => post.id !== postId));
+        filterPosts(posts.filter(post => post.id !== postId), category, sort); // Актуализирайте филтрирането след изтриване
     };
 
     return (
@@ -87,7 +90,15 @@ export default function AllPosts() {
             <h1>Posts</h1>
             <div className="filters-container">
                 <label htmlFor="search">Search: </label>
-                <input value={search} onChange={handleSearchChange} type="text" name="search" id="search" />
+                <input
+                    value={searchTerm}
+                    onChange={handleSearchChange}
+                    onKeyDown={handleKeyDown}
+                    type="text"
+                    name="search"
+                    id="search"
+                />
+                <button onClick={handleSearchSubmit}>Search</button> 
 
                 <label htmlFor="category">Category: </label>
                 <select value={category} onChange={handleCategoryChange} name="category" id="category">
