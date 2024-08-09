@@ -1,11 +1,13 @@
-
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { getAllPosts } from "../services/posts.service";  
 import { getAllUsers } from "../services/users.service";
+import { getTopCommentedPosts, getRecentPosts } from "../services/posts.service";
 
 export default function Home() {
   const [userCount, setUserCount] = useState(0);
   const [postCount, setPostCount] = useState(0);
+  const [topCommentedPosts, setTopCommentedPosts] = useState([]);
+  const [recentPosts, setRecentPosts] = useState([]);
 
   useEffect(() => {
     const fetchCounts = async () => {
@@ -21,6 +23,20 @@ export default function Home() {
     };
 
     fetchCounts();
+  }, []);
+
+  useEffect (() => {
+    const fetchPosts = async () => {
+      try {
+        const topCommented = await getTopCommentedPosts();
+        const recent = await getRecentPosts();
+        setTopCommentedPosts(topCommented);
+        setRecentPosts(recent);
+      } catch (error) {
+          console.error('Failed to fetch posts:', error);
+      }
+    };
+    fetchPosts();
   }, []);
 
   return (
@@ -45,6 +61,30 @@ export default function Home() {
         <p><strong>Members:</strong> {userCount}</p>
         <p><strong>Posts:</strong> {postCount}</p>
       </div>
+
+      <section>
+        <h2>10 Most commented Posts</h2>
+          <ul>
+            {topCommentedPosts.map(post => (
+              <li key={post.id}>
+                <h3>{post.title}</h3>
+                <p>{post.commentCount} comments</p>
+              </li>
+            ))}
+          </ul>
+      </section>
+
+      <section>
+            <h2>10 Most Recently Created Posts</h2>
+            <ul>
+              {recentPosts.map(post => (
+                <li key={post.id}>
+                  <h3>{post.title}</h3>
+                  <p>Created at: {new Date(post.createdOn).toLocaleString()}</p>
+                </li>
+              ))}
+            </ul>
+      </section>
     </div>
   );
-}
+};

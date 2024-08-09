@@ -1,5 +1,7 @@
-import { ref as dbRef, push, get, set, update, remove } from 'firebase/database';
+import { ref as dbRef, push, get, set, update, remove, query, orderByChild, limitToLast } from 'firebase/database';
 import { db } from '../config/firebase-config';
+
+
 
 export const getAllPosts = async (search = '') => {
     try {
@@ -265,3 +267,31 @@ export const getCommentLikes = async (postId, commentId) => {
         throw new Error('Unable to fetch comment likes.');
     }
 };
+
+// Helper function to count comments
+const countComments = (post) => {
+    return post.comments ? Object.keys(post.comments).length : 0;
+}; 
+export const getTopCommentedPosts = async () =>{
+    const postsRef = dbRef(db, 'posts');
+    const snapshot = await get(postsRef);
+    const posts = [];
+   
+    snapshot.forEach(childSnapshot => {
+        const post = {id: childSnapshot.key, ...childSnapshot.val() };
+        post.commentCount = countComments(post);
+        posts.push(post);
+    });
+    return posts.sort((a, b) => b.commentCount - a.commentCount).slice(0 , 10);
+};
+
+export const getRecentPosts = async () => {
+    const postsRef = dbRef(db, 'posts');
+    const recentPostsQuery = query(postsRef, orderByChild('createdOn'), limitToLast(10));
+    const snapshot = await get(recentPostsQuery);
+    const posts = [];
+    snapshot.forEach(childSnapShot => {
+        posts.push({id: childSnapShot.key, ...childSnapShot.val() });
+    });
+    return posts.sort((a, b) => new Date(b.createdOn) - new Date(a.createdOn));
+}; 
