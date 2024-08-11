@@ -10,7 +10,7 @@ export default function Profile() {
         firstName: userData.firstName || '',
         lastName: userData.lastName || '',
         phoneNumber: userData.phoneNumber || '',
-        profilePicture: userData.profilePicture || defaultProfilePicture, 
+        profilePicture: userData.profilePicture || defaultProfilePicture,
     });
     const [newProfilePicture, setNewProfilePicture] = useState(null);
 
@@ -31,8 +31,14 @@ export default function Profile() {
             let profilePictureUrl = profile.profilePicture;
 
             if (newProfilePicture) {
+                console.log('Uploading new profile picture...');
                 profilePictureUrl = await uploadProfilePhoto(user.uid, newProfilePicture);
                 console.log('New profile picture uploaded:', profilePictureUrl);
+                
+                setProfile(prevProfile => ({
+                    ...prevProfile,
+                    profilePicture: profilePictureUrl,
+                }));
             }
 
             await saveUserDetails({
@@ -51,11 +57,6 @@ export default function Profile() {
                 },
             }));
 
-            setProfile(prevProfile => ({
-                ...prevProfile,
-                profilePicture: profilePictureUrl,
-            }));
-
             alert('Profile updated successfully!');
         } catch (error) {
             console.error('Failed to update profile:', error);
@@ -65,7 +66,16 @@ export default function Profile() {
 
     const handleProfilePictureChange = (e) => {
         if (e.target.files && e.target.files[0]) {
+            console.log('New profile picture selected:', e.target.files[0]);
             setNewProfilePicture(e.target.files[0]);
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                setProfile((prevProfile) => ({
+                    ...prevProfile,
+                    profilePicture: e.target.result,
+                }));
+            };
+            reader.readAsDataURL(e.target.files[0]);
         }
     };
 
@@ -75,7 +85,7 @@ export default function Profile() {
             <div className="form-section">
                 <div className="profile-picture-section">
                     <img
-                        src={profile.profilePicture || defaultProfilePicture}
+                        src={profile.profilePicture}
                         alt="Profile"
                         className="profile-image"
                     />
