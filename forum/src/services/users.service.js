@@ -44,17 +44,19 @@ export const getUserNameByHandle = async (handle) => {
   }
 };
 
-export const saveUserDetails = async ({ uid, email, firstName, lastName, phoneNumber = null, profilePicture = null, isAdmin = false }) => {
+export const saveUserDetails = async ({ handle, uid, email, lastName, phoneNumber = null, profilePicture = null }) => {
   try {
-    await set(ref(db, `users/${uid}`), {
+    const userDetails = {
+      handle,
+      uid,
       email,
-      firstName,
       lastName,
-      phoneNumber,
+      phoneNumber,  
       profilePicture, 
       createdOn: new Date().toISOString(),
-      isAdmin 
-    });
+    };
+
+    await set(ref(db, `users/${handle}`), userDetails);
   } catch (error) {
     console.error('Error saving user details:', error);
     throw new Error('Unable to save user details.');

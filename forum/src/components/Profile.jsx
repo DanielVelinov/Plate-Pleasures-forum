@@ -2,17 +2,15 @@ import React, { useState, useContext } from 'react';
 import { AppContext } from '../state/app.context';
 import { saveUserDetails } from '../services/users.service';
 import defaultProfilePicture from '../assets/profile-picture.jpg/profilePicture.png';
-
-import { uploadProfilePhoto } from '../services/storage.service'; 
-
+import { uploadProfilePhoto } from '../services/storage.service';
 
 export default function Profile() {
     const { user, userData, setAppState } = useContext(AppContext);
     const [profile, setProfile] = useState({
-        firstName: userData.firstName || '',
+        handle: userData.handle || '', 
         lastName: userData.lastName || '',
         phoneNumber: userData.phoneNumber || '',
-        profilePicture: userData.profilePicture || null, 
+        profilePicture: userData.profilePicture || null,
     });
     const [newProfilePicture, setNewProfilePicture] = useState(null);
 
@@ -28,29 +26,36 @@ export default function Profile() {
             alert('Your account is blocked. You cannot edit your profile.');
             return;
         }
-
+    
         try {
             let profilePictureUrl = profile.profilePicture;
             if (newProfilePicture) {
                 profilePictureUrl = await uploadProfilePhoto(user.uid, newProfilePicture);
+                setProfile(prevProfile => ({
+                    ...prevProfile,
+                    profilePicture: profilePictureUrl, 
+                }));
             }
-
+    
             await saveUserDetails({
+                handle: profile.handle,
                 uid: user.uid,
                 email: user.email,
-                ...profile,
-                profilePicture: profilePictureUrl, 
+                lastName: profile.lastName,
+                phoneNumber: profile.phoneNumber,
+                profilePicture: profilePictureUrl,
             });
-
+    
             setAppState(prevState => ({
                 ...prevState,
                 userData: {
                     ...prevState.userData,
-                    ...profile,
+                    lastName: profile.lastName,
+                    phoneNumber: profile.phoneNumber,
                     profilePicture: profilePictureUrl,
                 },
             }));
-
+    
             alert('Profile updated successfully!');
         } catch (error) {
             console.error('Failed to update profile:', error);
@@ -76,15 +81,16 @@ export default function Profile() {
                     />
                     <input type="file" accept="image/*" onChange={handleProfilePictureChange} />
                 </div>
-                <label htmlFor="firstName">First Name: </label>
+                <label htmlFor="handle">First Name: </label>
                 <input
                     className="input-field"
-                    value={profile.firstName}
-                    onChange={e => updateProfile('firstName', e.target.value)}
+                    value={profile.handle}
+                    onChange={e => updateProfile('handle', e.target.value)}
                     type="text"
-                    name="firstName"
-                    id="firstName"
-                    placeholder="Enter your first name"
+                    name="handle"
+                    id="handle"
+                    placeholder="Enter your handle"
+                    disabled 
                 /><br />
                 <label htmlFor="lastName">Last Name: </label>
                 <input
