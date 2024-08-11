@@ -6,6 +6,8 @@ import Comments from './Comments';
 import EditPost from './EditPost';
 import { dislikePost, likePost, unlikePost, undislikePost, deletePost } from '../services/posts.service';
 import { Link } from 'react-router-dom';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faThumbsUp, faThumbsDown } from '@fortawesome/free-solid-svg-icons';
 
 export default function Post({ post, onDelete }) {
     const { userData } = useContext(AppContext);
@@ -126,26 +128,28 @@ export default function Post({ post, onDelete }) {
                 </button>
             )}
             <p className="post-author">Posted By: {authorName} on {formattedDate}</p>
-            <button
-                className={`like-btn ${Array.isArray(likedBy) && likedBy.includes(userData?.handle) ? 'active' : ''}`}
-                onClick={toggleLike}
-            >
-                Like
-            </button>
-            <span>{likedBy.length} {likedBy.length === 1 ? 'Like' : 'Likes'}</span>
-            <button
-                className={`dislike-btn ${Array.isArray(dislikedBy) && dislikedBy.includes(userData?.handle) ? 'active' : ''}`}
-                onClick={toggleDislike}
-            >
-                Dislike
-            </button>
-            <span>{dislikedBy.length} {dislikedBy.length === 1 ? 'Dislike' : 'Dislikes'}</span>
-            {(userData?.handle === post.author || userData?.isAdmin) && (
-                <>
-                    <button className="delete-btn" onClick={handleDelete}>Delete</button>
-                    <button className="edit-btn" onClick={toggleEdit}>{isEditing ? 'Cancel' : 'Edit'}</button>
-                </>
-            )}
+            <div className="post-actions">
+                <button
+                    className={`like-btn ${Array.isArray(likedBy) && likedBy.includes(userData?.handle) ? 'active' : ''}`}
+                    onClick={toggleLike}
+                >
+                    <FontAwesomeIcon icon={faThumbsUp} />
+                    <span>{likedBy.length}</span>
+                </button>
+                <button
+                    className={`dislike-btn ${Array.isArray(dislikedBy) && dislikedBy.includes(userData?.handle) ? 'active' : ''}`}
+                    onClick={toggleDislike}
+                >
+                    <FontAwesomeIcon icon={faThumbsDown} />
+                    <span>{dislikedBy.length}</span>
+                </button>
+                {(userData?.handle === post.author || userData?.isAdmin) && (
+                    <>
+                        <button className="delete-btn" onClick={handleDelete}>Delete</button>
+                        <button className="edit-btn" onClick={toggleEdit}>{isEditing ? 'Cancel' : 'Edit'}</button>
+                    </>
+                )}
+            </div>
             {isEditing && <EditPost post={post} onSave={handleSave} />}
             <Comments postId={post.id} postAuthor={post.author} />
             <p className="post-date">Created on: {formattedDate}</p>

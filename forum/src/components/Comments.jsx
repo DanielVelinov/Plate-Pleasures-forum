@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useContext } from 'react';
 import PropTypes from 'prop-types';
 import {
@@ -11,11 +10,13 @@ import {
   unlikeComment,
   getCommentLikes
 } from '../services/posts.service';
-import { getUserNameByHandle } from '../services/users.service'; 
+import { getUserNameByHandle } from '../services/users.service';
 import { AppContext } from '../state/app.context';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faThumbsUp, faThumbsDown, faReply } from '@fortawesome/free-solid-svg-icons';
 
 const Comments = ({ postId, limit = 3, postAuthor }) => {
-  const [comments, setComments] = useState([]);
+  const [comments, setComments] = useState([]); 
   const [newComment, setNewComment] = useState('');
   const [showAll, setShowAll] = useState(false);
   const [userNames, setUserNames] = useState({});
@@ -67,7 +68,6 @@ const Comments = ({ postId, limit = 3, postAuthor }) => {
 
   const handleAddComment = async () => {
     if (newComment.trim()) {
-      // Проверка за блокиран акаунт
       if (userData.isBlocked) {
         alert('Your account is blocked. You cannot add comments.');
         return;
@@ -177,15 +177,22 @@ const Comments = ({ postId, limit = 3, postAuthor }) => {
               {(userData.handle === comment.userHandle || userData.handle === postAuthor || userData.isAdmin) && (
                 <button className="comment-delete-btn" onClick={() => handleDeleteComment(comment.id)}>Delete</button>
               )}
-              <button className="comment-reply-btn" onClick={() => handleShowReplyInput(comment.id)}>Reply</button>
+              <button className="comment-reply-btn" onClick={() => handleShowReplyInput(comment.id)}>
+                <FontAwesomeIcon icon={faReply} /> Reply
+              </button>
             </p>
             <div>
               {commentLikes[comment.id] && commentLikes[comment.id][userData.handle] ? (
-                <button onClick={() => handleUnlikeComment(comment.id)}>Unlike</button>
+                <button onClick={() => handleUnlikeComment(comment.id)} className="like-btn active">
+                  <FontAwesomeIcon icon={faThumbsDown} />
+                  <span>{Object.keys(commentLikes[comment.id] || {}).length}</span>
+                </button>
               ) : (
-                <button onClick={() => handleLikeComment(comment.id)}>Like</button>
+                <button onClick={() => handleLikeComment(comment.id)} className="like-btn">
+                  <FontAwesomeIcon icon={faThumbsUp} />
+                  <span>{Object.keys(commentLikes[comment.id] || {}).length}</span>
+                </button>
               )}
-              <span>Likes: {commentLikes[comment.id] ? Object.keys(commentLikes[comment.id]).length : 0}</span>
             </div>
             {showReplyInput[comment.id] && (
               <div className="reply-input-section">

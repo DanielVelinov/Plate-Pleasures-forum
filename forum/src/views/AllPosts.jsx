@@ -1,4 +1,7 @@
-import { useEffect, useState, useCallback } from "react";
+// AllPosts.jsx
+
+import React from "react";
+import { useEffect, useState } from "react";
 import { getAllPosts } from "../services/posts.service";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import Post from '../components/Post';
@@ -12,22 +15,21 @@ export default function AllPosts() {
     const search = searchParams.get('search') ?? '';
     const [category, setCategory] = useState('all');
     const [sort, setSort] = useState('newest');
-    const [searchTerm, setSearchTerm] = useState(search); // Държим стойността на полето за търсене
+    const [searchTerm, setSearchTerm] = useState(search);
 
     const fetchPosts = async (searchTerm) => {
         setLoading(true);
         try {
             const postsData = await getAllPosts(searchTerm);
-            console.log('Fetched Posts:', postsData); 
             const transformedPosts = postsData.map(post => ({
                 ...post,
                 likedBy: Array.isArray(post.likedBy) ? post.likedBy : Object.keys(post.likedBy ?? {}),
-                dislikedBy: Array.isArray(post.dislikedBy) ? post.dislikedBy : Object.keys(post.dislikedBy ?? {}), 
+                dislikedBy: Array.isArray(post.dislikedBy) ? post.dislikedBy : Object.keys(post.dislikedBy ?? {}),
                 comments: post.comments || {},
                 createdOn: post.createdOn || new Date().toISOString(),
             }));
             setPosts(transformedPosts);
-            filterPosts(transformedPosts, category, sort); // Приложете филтрирането върху заредените публикации
+            filterPosts(transformedPosts, category, sort);
         } catch (error) {
             console.error('Failed to fetch posts:', error);
             alert('Failed to fetch posts. Please try again.');
@@ -37,7 +39,7 @@ export default function AllPosts() {
     };
 
     useEffect(() => {
-        fetchPosts(search); // Зарежда публикации веднага след зареждане на страницата
+        fetchPosts(search);
     }, []);
 
     const handleSearchChange = (event) => {
@@ -67,22 +69,22 @@ export default function AllPosts() {
             filtered.sort((a, b) => new Date(b.createdOn) - new Date(a.createdOn));
         }
 
-        setFilteredPosts([...filtered]); 
+        setFilteredPosts([...filtered]);
     };
 
     const handleCategoryChange = (event) => {
         setCategory(event.target.value);
-        filterPosts(posts, event.target.value, sort); // Актуализирайте филтрирането
+        filterPosts(posts, event.target.value, sort);
     };
 
     const handleSortChange = (event) => {
         setSort(event.target.value);
-        filterPosts(posts, category, event.target.value); // Актуализирайте филтрирането
+        filterPosts(posts, category, event.target.value);
     };
 
     const handleDelete = (postId) => {
         setPosts(posts.filter(post => post.id !== postId));
-        filterPosts(posts.filter(post => post.id !== postId), category, sort); // Актуализирайте филтрирането след изтриване
+        filterPosts(posts.filter(post => post.id !== postId), category, sort);
     };
 
     return (
@@ -98,7 +100,7 @@ export default function AllPosts() {
                     name="search"
                     id="search"
                 />
-                <button onClick={handleSearchSubmit}>Search</button> 
+                <button onClick={handleSearchSubmit}>Search</button>
 
                 <label htmlFor="category">Category: </label>
                 <select value={category} onChange={handleCategoryChange} name="category" id="category">
@@ -118,9 +120,13 @@ export default function AllPosts() {
             {loading ? (
                 <p>Loading posts...</p>
             ) : filteredPosts.length > 0 ? (
-                filteredPosts.map(t => (
-                    <Post key={t.id} post={t} onDelete={handleDelete} />
-                ))
+                <div className="posts-grid">
+                    {filteredPosts.map(post => (
+                        <div key={post.id} className="post-card">
+                            <Post post={post} onDelete={handleDelete} />
+                        </div>
+                    ))}
+                </div>
             ) : (
                 <p>No posts found.</p>
             )}

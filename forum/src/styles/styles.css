@@ -23,7 +23,6 @@ header {
     padding: 20px;
     display: flex;
     flex-direction: column;
-    /* Stack elements vertically */
     align-items: center;
     border-bottom: 1px solid var(--highlight-color);
 }
@@ -33,7 +32,6 @@ header {
     align-items: center;
     justify-content: center;
     margin-bottom: 20px;
-    /* Space between logo and nav links */
 }
 
 .logo {
@@ -52,13 +50,11 @@ h1 {
     display: flex;
     align-items: center;
     flex-direction: column;
-    /* Stack nav links vertically */
 }
 
 .nav-links {
     display: flex;
     gap: 20px;
-    /* Space between navigation buttons */
 }
 
 .nav-links a {
@@ -66,31 +62,25 @@ h1 {
     text-decoration: none;
     transition: background-color 0.3s ease, color 0.3s ease;
     padding: 10px 15px;
-    /* Padding for button-like appearance */
     border-radius: var(--border-radius);
-    /* Use variable for consistency */
     background-color: transparent;
     border: 2px solid var(--button-bg-color);
-    /* Border for visibility */
 }
 
 .nav-links a:hover {
     color: var(--text-color);
     background-color: var(--button-bg-hover-color);
-    /* Hover background */
 }
 
 .nav-links a.active {
     color: var(--text-color);
     background-color: var(--button-bg-color);
-    /* Active background */
     border-radius: var(--border-radius);
     padding: 10px 15px;
 }
 
 .logout-container {
     margin-top: 10px;
-    /* Space above the logout button */
     display: flex;
     align-items: center;
 }
@@ -143,9 +133,6 @@ h1 {
 .back-home-btn:hover {
     background-color: var(--button-bg-hover-color);
 }
-
-
-
 
 .sidebar {
     position: fixed;
@@ -231,7 +218,6 @@ h1 {
 .sidebar:hover~.content {
     margin-left: 200px;
 }
-
 
 .card {
     background-color: var(--secondary-bg-color);
@@ -416,7 +402,6 @@ footer {
     display: block;
     color: var(--text-color);
 }
-/* styles.css */
 
 .comments-section .reply-input-section {
     margin-top: 10px;
@@ -466,6 +451,7 @@ footer {
 .comments-section .reply-delete-btn:hover {
     color: var(--button-bg-hover-color);
 }
+
 .profile-edit-page {
     max-width: 600px;
     margin: 0 auto;
@@ -522,6 +508,7 @@ footer {
 .profile-edit-page .save-profile-btn:hover {
     background-color: var(--button-bg-hover-color);
 }
+
 /* Промяна на стила на постовете */
 .post-card {
     background-color: var(--secondary-bg-color);
@@ -532,9 +519,84 @@ footer {
     transition: transform var(--transition);
 }
 
+.posts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.post-card {
+    overflow: hidden;
+}
+
+.post-card img {
+    width: 100%;
+    height: auto;
+    border-radius: var(--border-radius);
+}
+
 .post-card:hover {
     transform: translateY(-5px);
 }
+
+.post-card h3 {
+    margin-top: 15px;
+    color: var(--text-color);
+}
+
+.post-card p {
+    color: var(--text-secondary-color);
+    font-size: 0.9rem;
+}
+
+/* Стилове за Like и Dislike бутони */
+.like-btn, .dislike-btn {
+    background-color: transparent; 
+    color: white; 
+    border: none; 
+    padding: 10px 20px;
+    cursor: pointer;
+    margin-right: 10px;
+    border-radius: 5px;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px; /* Разстояние между иконата и числото */
+    transition: color 0.3s ease;
+}
+
+
+
+.like-btn.active, .dislike-btn.active {
+    color: #ff914d; 
+}
+
+.like-btn:hover, .dislike-btn:hover {
+    color: #ff914d; 
+}
+
+.post-actions, .comment-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.post-actions span, .comment-actions span {
+    margin-left: 5px;
+    font-size: 16px;
+    color: white;
+}
+.post-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.post-actions span {
+    margin-left: 5px;
+    font-size: 16px;
+    color: white;
+}
+
 .top-posts-container {
     display: flex;
     justify-content: space-between;
@@ -577,6 +639,7 @@ footer {
 .top-post-card:hover {
     transform: translateY(-5px);
 }
+
 .top-posts-button {
     text-decoration: none;
     background-color: var(--button-bg-color);
@@ -590,4 +653,28 @@ footer {
 
 .top-posts-button:hover {
     background-color: var(--button-bg-hover-color);
+}
+.like-btn, .dislike-btn {
+    background-color: transparent; /* Прозрачен фон по подразбиране */
+    color: white; /* Бял текст по подразбиране */
+    border: none; /* Без рамка */
+    padding: 10px;
+    cursor: pointer;
+    margin-right: 5px;
+    border-radius: 5px;
+    transition: color 0.3s ease; /* Плавен преход на цвета */
+}
+
+.like-btn.active, .dislike-btn.active {
+    color: #ff914d; /* Оранжев цвят при активен бутон */
+}
+
+.like-btn:hover, .dislike-btn:hover {
+    color: #ff914d; /* Оранжев цвят при hover */
+}
+
+.post-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
 }

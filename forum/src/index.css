@@ -61,6 +61,3 @@ body {
   margin-right: 10px;
 }
 
-.like-btn.active, .dislike-btn.active {
-  background-color: red;
-}
