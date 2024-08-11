@@ -2,6 +2,7 @@
 import { useContext, useState } from "react";
 import { createPost as apiCreatePost } from "../services/posts.service";
 import { AppContext } from '../state/app.context';
+import { uploadImage } from '../services/storage.service';
 
 export default function CreatePostComponent() {
     const titleMinLength = 16;
@@ -14,7 +15,7 @@ export default function CreatePostComponent() {
         content: '',
         category: '',
         tags: [],
-        image: null, 
+        image: null,
     });
     const [tagInput, setTagInput] = useState('');
     const { userData } = useContext(AppContext);
@@ -31,7 +32,6 @@ export default function CreatePostComponent() {
             alert('You must be logged in to create a post.');
             return;
         }
-
 
         if (userData.isBlocked) {
             alert('Your account is blocked. You cannot create a post.');
@@ -52,14 +52,13 @@ export default function CreatePostComponent() {
         }
 
         try {
-        
+            let imageUrl = null;
             if (post.image) {
-                const formData = new FormData();
-                formData.append('image', post.image);
-    
+                imageUrl = await uploadImage(post.image); 
             }
 
-            await apiCreatePost(userData.handle, post.title, post.content, post.category, post.tags);
+            await apiCreatePost(userData.handle, post.title, post.content, post.category, post.tags, imageUrl); 
+
             setPost({ title: '', content: '', category: '', tags: [], image: null });
             setTagInput('');
             alert('Post created successfully!');

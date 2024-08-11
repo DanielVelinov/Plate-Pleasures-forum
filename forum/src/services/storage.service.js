@@ -12,3 +12,14 @@ export const uploadProfilePhoto = async (uid, file) => {
         throw new Error('Failed to upload profile photo.');
     }
 };
+
+export const uploadImage = async (file) => {
+    try {
+        const fileRef = ref(storage, `post_images/${file.name}`);
+        await uploadBytes(fileRef, file);
+        return await getDownloadURL(fileRef); 
+    } catch (error) {
+        console.error('Error uploading image:', error);
+        throw new Error('Failed to upload image.');
+    }
+};

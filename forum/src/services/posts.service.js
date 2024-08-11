@@ -30,13 +30,14 @@ export const getAllPosts = async (search = '') => {
 };
 
 
-export const createPost = async (author, title, content, category, tags = []) => {
+export const createPost = async (author, title, content, category, tags = [], imageUrl = null) => {
     const post = {
         author,
         title,
         content,
         category,
         tags,
+        imageUrl, 
         createdOn: new Date().toISOString(),
         likedBy: {}
     };
@@ -52,7 +53,6 @@ export const createPost = async (author, title, content, category, tags = []) =>
         throw new Error('Failed to create post.');
     }
 };
-
 export const updatePost = async (id, updatedData) => {
     try {
         await update(dbRef(db, `posts/${id}`), updatedData);

@@ -115,9 +115,10 @@ export default function Post({ post, onDelete }) {
         <div className="post-card">
             <Link to={`/posts/${post.id}`}>
                 <h3 className="post-title">{post.title}</h3>
-            </Link> 
+            </Link>
             <p className="post-category">Category: {post.category}</p>
             <p className="post-tags">Tags: {post.tags?.join(', ')}</p>
+            {post.imageUrl && <img src={post.imageUrl} alt={post.title} className="post-image" />}
             <p className="post-content">{isExpanded ? post.content : snippet}</p>
             {post.content.length > 100 && (
                 <button className="toggle-content-btn" onClick={toggleExpanded}>
@@ -162,6 +163,7 @@ Post.propTypes = {
         likedBy: PropTypes.arrayOf(PropTypes.string),
         dislikedBy: PropTypes.arrayOf(PropTypes.string),
         category: PropTypes.string,
+        imageUrl: PropTypes.string,
         tags: PropTypes.arrayOf(PropTypes.string),
     }).isRequired,
     onDelete: PropTypes.func,
