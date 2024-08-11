@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { getAllPosts } from "../services/posts.service";  
 import { getAllUsers } from "../services/users.service";
 import { getTopCommentedPosts, getRecentPosts } from "../services/posts.service";
-
+import { Link } from "react-router-dom";
 export default function Home() {
   const [userCount, setUserCount] = useState(0);
   const [postCount, setPostCount] = useState(0);
@@ -67,7 +67,9 @@ export default function Home() {
           <ul>
             {topCommentedPosts.map(post => (
               <li key={post.id}>
-                <h3>{post.title}</h3>
+                 <Link to={`/posts/${post.id}`}>
+                <h3 className="post-title">{post.title}</h3>
+            </Link> 
                 <p>{post.commentCount} comments</p>
               </li>
             ))}
@@ -79,7 +81,9 @@ export default function Home() {
             <ul>
               {recentPosts.map(post => (
                 <li key={post.id}>
-                  <h3>{post.title}</h3>
+                   <Link to={`/posts/${post.id}`}>
+                <h3 className="post-title">{post.title}</h3>
+            </Link> 
                   <p>Created at: {new Date(post.createdOn).toLocaleString()}</p>
                 </li>
               ))}
