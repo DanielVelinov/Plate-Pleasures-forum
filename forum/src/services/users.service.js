@@ -23,7 +23,7 @@ export const createUserHandle = async (handle, uid, email) => {
 
 export const getUserData = async (uid) => {
   try {
-    const snapshot = await get(ref(db, `users/${uid}`)); 
+    const snapshot = await get(query(ref(db, 'users'), orderByChild('uid'), equalTo(uid)));
     if (!snapshot.exists()) {
       throw new Error('User not found!');
     }
@@ -44,21 +44,16 @@ export const getUserNameByHandle = async (handle) => {
   }
 };
 
-export const saveUserDetails = async ({ uid, ...newDetails }) => {
+export const saveUserDetails = async ({ uid, email, firstName, lastName, phoneNumber = null, profilePicture = null, isAdmin = false }) => {
   try {
-    const userRef = ref(db, `users/${uid}`);
-    const snapshot = await get(userRef);
-
-    if (!snapshot.exists()) {
-      throw new Error('User not found!');
-    }
-
-    const existingDetails = snapshot.val();
-
-    await set(userRef, {
-      ...existingDetails,
-      ...newDetails,
-      updatedOn: new Date().toISOString(),
+    await set(ref(db, `users/${uid}`), {
+      email,
+      firstName,
+      lastName,
+      phoneNumber,
+      profilePicture, 
+      createdOn: new Date().toISOString(),
+      isAdmin 
     });
   } catch (error) {
     console.error('Error saving user details:', error);

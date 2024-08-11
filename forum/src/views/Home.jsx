@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { getAllPosts } from "../services/posts.service";
+import { getAllPosts } from "../services/posts.service";  
 import { getAllUsers } from "../services/users.service";
 import { getTopCommentedPosts, getRecentPosts } from "../services/posts.service";
-import { Link } from 'react-router-dom';
 
 export default function Home() {
   const [userCount, setUserCount] = useState(0);
@@ -26,7 +25,7 @@ export default function Home() {
     fetchCounts();
   }, []);
 
-  useEffect(() => {
+  useEffect (() => {
     const fetchPosts = async () => {
       try {
         const topCommented = await getTopCommentedPosts();
@@ -34,7 +33,7 @@ export default function Home() {
         setTopCommentedPosts(topCommented);
         setRecentPosts(recent);
       } catch (error) {
-        console.error('Failed to fetch posts:', error);
+          console.error('Failed to fetch posts:', error);
       }
     };
     fetchPosts();
@@ -65,31 +64,27 @@ export default function Home() {
 
       <section>
         <h2>10 Most commented Posts</h2>
-        <ul>
-          {topCommentedPosts.map(post => (
-            <li key={post.id}>
-              <Link to={`/posts/${post.id}`}>
-                <h3 className="post-title">{post.title}</h3>
-              </Link>
-              <p>{post.commentCount} comments</p>
-            </li>
-          ))}
-        </ul>
+          <ul>
+            {topCommentedPosts.map(post => (
+              <li key={post.id}>
+                <h3>{post.title}</h3>
+                <p>{post.commentCount} comments</p>
+              </li>
+            ))}
+          </ul>
       </section>
 
       <section>
-        <h2>10 Most Recently Created Posts</h2>
-        <ul>
-          {recentPosts.map(post => (
-            <li key={post.id}>
-               <Link to={`/posts/${post.id}`}>
-                <h3 className="post-title">{post.title}</h3>
-              </Link>
-              <p>Created at: {new Date(post.createdOn).toLocaleString()}</p>
-            </li>
-          ))}
-        </ul>
+            <h2>10 Most Recently Created Posts</h2>
+            <ul>
+              {recentPosts.map(post => (
+                <li key={post.id}>
+                  <h3>{post.title}</h3>
+                  <p>Created at: {new Date(post.createdOn).toLocaleString()}</p>
+                </li>
+              ))}
+            </ul>
       </section>
     </div>
   );
-}
+};

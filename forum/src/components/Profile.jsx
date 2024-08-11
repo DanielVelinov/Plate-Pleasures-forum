@@ -2,7 +2,9 @@ import React, { useState, useContext } from 'react';
 import { AppContext } from '../state/app.context';
 import { saveUserDetails } from '../services/users.service';
 import defaultProfilePicture from '../assets/profile-picture.jpg/profilePicture.png';
-import { uploadProfilePhoto } from '../services/storage.service';
+
+import { uploadProfilePhoto } from '../services/storage.service'; 
+
 
 export default function Profile() {
     const { user, userData, setAppState } = useContext(AppContext);
@@ -10,7 +12,7 @@ export default function Profile() {
         firstName: userData.firstName || '',
         lastName: userData.lastName || '',
         phoneNumber: userData.phoneNumber || '',
-        profilePicture: userData.profilePicture || defaultProfilePicture,
+        profilePicture: userData.profilePicture || null, 
     });
     const [newProfilePicture, setNewProfilePicture] = useState(null);
 
@@ -29,23 +31,15 @@ export default function Profile() {
 
         try {
             let profilePictureUrl = profile.profilePicture;
-
             if (newProfilePicture) {
-                console.log('Uploading new profile picture...');
                 profilePictureUrl = await uploadProfilePhoto(user.uid, newProfilePicture);
-                console.log('New profile picture uploaded:', profilePictureUrl);
-                
-                setProfile(prevProfile => ({
-                    ...prevProfile,
-                    profilePicture: profilePictureUrl,
-                }));
             }
 
             await saveUserDetails({
                 uid: user.uid,
                 email: user.email,
                 ...profile,
-                profilePicture: profilePictureUrl,
+                profilePicture: profilePictureUrl, 
             });
 
             setAppState(prevState => ({
@@ -66,16 +60,7 @@ export default function Profile() {
 
     const handleProfilePictureChange = (e) => {
         if (e.target.files && e.target.files[0]) {
-            console.log('New profile picture selected:', e.target.files[0]);
             setNewProfilePicture(e.target.files[0]);
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                setProfile((prevProfile) => ({
-                    ...prevProfile,
-                    profilePicture: e.target.result,
-                }));
-            };
-            reader.readAsDataURL(e.target.files[0]);
         }
     };
 
@@ -85,7 +70,7 @@ export default function Profile() {
             <div className="form-section">
                 <div className="profile-picture-section">
                     <img
-                        src={profile.profilePicture}
+                        src={profile.profilePicture || defaultProfilePicture}
                         alt="Profile"
                         className="profile-image"
                     />

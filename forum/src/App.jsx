@@ -12,7 +12,7 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import NotFound from './views/NotFound';
 import SinglePost from './views/SinglePost';
 import AdminPanel from './views/AdminPanel';
-import { AppProvider } from './state/app.context';  
+import { AppContext } from './state/app.context';
 import Login from './views/Login';
 import Authenticated from './hoc/Authenticated';
 import Register from './views/Register';
@@ -24,7 +24,6 @@ function App() {
   const [appState, setAppState] = useState({
     user: null,
     userData: null,
-    isAdmin: false,
   });
   const [user, loading, error] = useAuthState(auth);
 
@@ -44,13 +43,7 @@ function App() {
 
         console.log('User data fetched:', userData);
 
-        const isAdmin = userData.isAdmin || false;  
-
-        setAppState((prevState) => ({
-          ...prevState,
-          userData,
-          isAdmin,
-        }));
+        setAppState((prevState) => ({ ...prevState, userData }));
       } catch (error) {
         console.error('Failed to fetch user data:', error);
       }
@@ -61,7 +54,7 @@ function App() {
 
   return (
     <BrowserRouter>
-      <AppProvider> 
+      <AppContext.Provider value={{ ...appState, setAppState }}>
         <Header />
         <Sidebar />
         <div className="content">
@@ -71,14 +64,14 @@ function App() {
             <Route path='/posts/:id' element={<Authenticated><SinglePost /></Authenticated>} />
             <Route path='/posts-create' element={<Authenticated><CreatePost /></Authenticated>} />
             <Route path='/admin' element={<Authenticated><AdminPanel /></Authenticated>} />
-            <Route path='/profile' element={<Authenticated><Profile /></Authenticated>} /> 
+            <Route path='/profile' element={<Authenticated><Profile /></Authenticated>} /> {/* Profile route */}
             <Route path='/login' element={<Login />} />
             <Route path='/register' element={<Register />} />
             <Route path='*' element={<NotFound />} />
           </Routes>
           <Footer />
         </div>
-      </AppProvider> 
+      </AppContext.Provider>
     </BrowserRouter>
   );
 }
