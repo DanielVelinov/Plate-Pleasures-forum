@@ -51,8 +51,8 @@ export const saveUserDetails = async ({ handle, uid, email, lastName, phoneNumbe
       uid,
       email,
       lastName,
-      phoneNumber,  
-      profilePicture, 
+      phoneNumber,
+      profilePicture,
       createdOn: new Date().toISOString(),
     };
 

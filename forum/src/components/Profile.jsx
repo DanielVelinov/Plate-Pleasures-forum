@@ -31,14 +31,10 @@ export default function Profile() {
             let profilePictureUrl = profile.profilePicture;
             if (newProfilePicture) {
                 profilePictureUrl = await uploadProfilePhoto(user.uid, newProfilePicture);
-                setProfile(prevProfile => ({
-                    ...prevProfile,
-                    profilePicture: profilePictureUrl, 
-                }));
             }
     
             await saveUserDetails({
-                handle: profile.handle,
+                handle: profile.handle, 
                 uid: user.uid,
                 email: user.email,
                 lastName: profile.lastName,
@@ -50,6 +46,7 @@ export default function Profile() {
                 ...prevState,
                 userData: {
                     ...prevState.userData,
+                    handle: profile.handle, 
                     lastName: profile.lastName,
                     phoneNumber: profile.phoneNumber,
                     profilePicture: profilePictureUrl,
@@ -90,7 +87,6 @@ export default function Profile() {
                     name="handle"
                     id="handle"
                     placeholder="Enter your handle"
-                    disabled 
                 /><br />
                 <label htmlFor="lastName">Last Name: </label>
                 <input
