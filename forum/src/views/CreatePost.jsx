@@ -1,4 +1,3 @@
-
 import { useContext, useState } from "react";
 import { createPost as apiCreatePost } from "../services/posts.service";
 import { AppContext } from '../state/app.context';
@@ -19,6 +18,7 @@ export default function CreatePostComponent() {
     });
     const [tagInput, setTagInput] = useState('');
     const { userData } = useContext(AppContext);
+    const [imageUrl, setImageUrl] = useState(''); // Added state for image preview
 
     const updatePost = (key, value) => {
         setPost({
@@ -61,6 +61,7 @@ export default function CreatePostComponent() {
 
             setPost({ title: '', content: '', category: '', tags: [], image: null });
             setTagInput('');
+            setImageUrl(''); // Reset image preview
             alert('Post created successfully!');
         } catch (error) {
             console.error('Failed to create post:', error);
@@ -72,6 +73,13 @@ export default function CreatePostComponent() {
         const file = e.target.files[0];
         if (file) {
             setPost({ ...post, image: file });
+
+            // Preview image
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setImageUrl(reader.result);
+            };
+            reader.readAsDataURL(file);
         }
     };
 
@@ -143,12 +151,15 @@ export default function CreatePostComponent() {
                         </li>
                     ))}
                 </ul><br />
-                <label htmlFor="image">Upload Image: </label>
+                <label className="upload-image-label" htmlFor="image">Upload Image: </label>
                 <input
                     type="file"
+                    id="image"
+                    className="upload-image-input"
                     accept="image/*"
                     onChange={handleImageUpload}
                 /><br />
+                {imageUrl && <img src={imageUrl} className="upload-image-preview" alt="Preview" />}
                 <button className="create-post-btn" onClick={handleCreatePost}>Create</button>
             </div>
         </div>

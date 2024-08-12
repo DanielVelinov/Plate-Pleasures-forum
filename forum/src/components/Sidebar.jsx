@@ -1,7 +1,6 @@
-// Sidebar.jsx
 import React, { useContext } from 'react';
 import { NavLink } from 'react-router-dom';
-import { FaHome, FaClipboardList, FaPlus, FaSignOutAlt, FaUserShield, FaUser } from 'react-icons/fa'; // Add FaUser for profile
+import { FaHome, FaClipboardList, FaPlus, FaSignOutAlt, FaUserShield, FaUser, FaUserPlus } from 'react-icons/fa'; // Добавяне на FaUserPlus за Register
 import { AppContext } from '../state/app.context';
 import { logoutUser } from '../services/auth.service';
 import { useNavigate } from "react-router-dom";
@@ -61,11 +60,11 @@ export default function Sidebar() {
                     </NavLink>
                 </div>
             )}
-            {user && (
+            {user ? (
                 <>
                     <div className="sidebar-icon-container">
                         <NavLink
-                            to="/profile"  // Route to the profile page
+                            to="/profile"
                             className={({ isActive }) => (isActive ? 'sidebar-icon active' : 'sidebar-icon')}
                         >
                             <FaUser />
@@ -82,6 +81,16 @@ export default function Sidebar() {
                         </button>
                     </div>
                 </>
+            ) : (
+                <div className="sidebar-icon-container">
+                    <NavLink
+                        to="/register"
+                        className={({ isActive }) => (isActive ? 'sidebar-icon active' : 'sidebar-icon')}
+                    >
+                        <FaUserPlus />
+                        <span className="tooltip">Register</span>
+                    </NavLink>
+                </div>
             )}
         </div>
     );

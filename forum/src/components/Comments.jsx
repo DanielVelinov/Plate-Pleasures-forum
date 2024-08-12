@@ -19,6 +19,7 @@ const Comments = ({ postId, limit = 3, postAuthor }) => {
   const [comments, setComments] = useState([]); 
   const [newComment, setNewComment] = useState('');
   const [showAll, setShowAll] = useState(false);
+  const [showComments, setShowComments] = useState(false);
   const [userNames, setUserNames] = useState({});
   const [commentLikes, setCommentLikes] = useState({});
   const { userData } = useContext(AppContext);
@@ -168,57 +169,61 @@ const Comments = ({ postId, limit = 3, postAuthor }) => {
 
   return (
     <div className="comments-section">
-      <h3 className="comments-title">Comments ({comments.length})</h3>
-      <ul className="comments-list">
-        {displayedComments.map(comment => (
-          <li key={comment.id} className="comment-item">
-            <p>
-              <strong>{userNames[comment.userHandle] || comment.userHandle}:</strong> {comment.content}
-              {(userData.handle === comment.userHandle || userData.handle === postAuthor || userData.isAdmin) && (
-                <button className="comment-delete-btn" onClick={() => handleDeleteComment(comment.id)}>Delete</button>
-              )}
-              <button className="comment-reply-btn" onClick={() => handleShowReplyInput(comment.id)}>
-                <FontAwesomeIcon icon={faReply} /> Reply
-              </button>
-            </p>
-            <div>
-              {commentLikes[comment.id] && commentLikes[comment.id][userData.handle] ? (
-                <button onClick={() => handleUnlikeComment(comment.id)} className="like-btn active">
-                  <FontAwesomeIcon icon={faThumbsDown} />
-                  <span>{Object.keys(commentLikes[comment.id] || {}).length}</span>
+      <h3 className="comments-title" onClick={() => setShowComments(!showComments)}>
+        Comments ({comments.length})
+      </h3>
+      {showComments && (
+        <ul className="comments-list">
+          {displayedComments.map(comment => (
+            <li key={comment.id} className="comment-item">
+              <p>
+                <strong>{userNames[comment.userHandle] || comment.userHandle}:</strong> {comment.content}
+                {(userData.handle === comment.userHandle || userData.handle === postAuthor || userData.isAdmin) && (
+                  <button className="comment-delete-btn" onClick={() => handleDeleteComment(comment.id)}>Delete</button>
+                )}
+                <button className="comment-reply-btn" onClick={() => handleShowReplyInput(comment.id)}>
+                  <FontAwesomeIcon icon={faReply} /> Reply
                 </button>
-              ) : (
-                <button onClick={() => handleLikeComment(comment.id)} className="like-btn">
-                  <FontAwesomeIcon icon={faThumbsUp} />
-                  <span>{Object.keys(commentLikes[comment.id] || {}).length}</span>
-                </button>
+              </p>
+              <div>
+                {commentLikes[comment.id] && commentLikes[comment.id][userData.handle] ? (
+                  <button onClick={() => handleUnlikeComment(comment.id)} className="like-btn active">
+                    <FontAwesomeIcon icon={faThumbsDown} />
+                    <span>{Object.keys(commentLikes[comment.id] || {}).length}</span>
+                  </button>
+                ) : (
+                  <button onClick={() => handleLikeComment(comment.id)} className="like-btn">
+                    <FontAwesomeIcon icon={faThumbsUp} />
+                    <span>{Object.keys(commentLikes[comment.id] || {}).length}</span>
+                  </button>
+                )}
+              </div>
+              {showReplyInput[comment.id] && (
+                <div className="reply-input-section">
+                  <input
+                    type="text"
+                    className="reply-input"
+                    value={replyText[comment.id] || ''}
+                    onChange={(e) => setReplyText((prev) => ({ ...prev, [comment.id]: e.target.value }))}
+                    placeholder="Add a reply"
+                  />
+                  <button className="add-reply-btn" onClick={() => handleAddReply(comment.id)}>Reply</button>
+                </div>
               )}
-            </div>
-            {showReplyInput[comment.id] && (
-              <div className="reply-input-section">
-                <input
-                  type="text"
-                  className="reply-input"
-                  value={replyText[comment.id] || ''}
-                  onChange={(e) => setReplyText((prev) => ({ ...prev, [comment.id]: e.target.value }))}
-                  placeholder="Add a reply"
-                />
-                <button className="add-reply-btn" onClick={() => handleAddReply(comment.id)}>Reply</button>
-              </div>
-            )}
-            {comment.replies && Object.keys(comment.replies).map(replyId => (
-              <div key={replyId} className="reply-item">
-                <p>
-                  <strong>{userNames[comment.replies[replyId].userHandle] || comment.replies[replyId].userHandle}:</strong> {comment.replies[replyId].content}
-                  {(userData.handle === comment.replies[replyId].userHandle || userData.handle === postAuthor || userData.isAdmin) && (
-                    <button className="reply-delete-btn" onClick={() => handleDeleteReply(comment.id, replyId)}>Delete</button>
-                  )}
-                </p>
-              </div>
-            ))}
-          </li>
-        ))}
-      </ul>
+              {comment.replies && Object.keys(comment.replies).map(replyId => (
+                <div key={replyId} className="reply-item">
+                  <p>
+                    <strong>{userNames[comment.replies[replyId].userHandle] || comment.replies[replyId].userHandle}:</strong> {comment.replies[replyId].content}
+                    {(userData.handle === comment.replies[replyId].userHandle || userData.handle === postAuthor || userData.isAdmin) && (
+                      <button className="reply-delete-btn" onClick={() => handleDeleteReply(comment.id, replyId)}>Delete</button>
+                    )}
+                  </p>
+                </div>
+              ))}
+            </li>
+          ))}
+        </ul>
+      )}
       {comments.length > limit && (
         <button className="toggle-comments-btn" onClick={() => setShowAll(!showAll)}>
           {showAll ? 'Show Less' : 'Show All'}
