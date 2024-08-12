@@ -1,4 +1,3 @@
-// AllPosts.jsx
 
 import React from "react";
 import { useEffect, useState } from "react";
@@ -16,6 +15,10 @@ export default function AllPosts() {
     const [category, setCategory] = useState('all');
     const [sort, setSort] = useState('newest');
     const [searchTerm, setSearchTerm] = useState(search);
+
+    // Състояния за странициране
+    const [currentPage, setCurrentPage] = useState(1);
+    const postsPerPage = 9;
 
     const fetchPosts = async (searchTerm) => {
         setLoading(true);
@@ -87,6 +90,20 @@ export default function AllPosts() {
         filterPosts(posts.filter(post => post.id !== postId), category, sort);
     };
 
+    // Изчисляване на текущите постове за показване
+    const indexOfLastPost = currentPage * postsPerPage;
+    const indexOfFirstPost = indexOfLastPost - postsPerPage;
+    const currentPosts = filteredPosts.slice(indexOfFirstPost, indexOfLastPost);
+
+    // Функция за смяна на страниците
+    const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
+    // Генериране на номера на страниците
+    const pageNumbers = [];
+    for (let i = 1; i <= Math.ceil(filteredPosts.length / postsPerPage); i++) {
+        pageNumbers.push(i);
+    }
+
     return (
         <div className="content">
             <h1>Posts</h1>
@@ -121,13 +138,26 @@ export default function AllPosts() {
             {loading ? (
                 <p>Loading posts...</p>
             ) : filteredPosts.length > 0 ? (
-                <div className="posts-grid">
-                    {filteredPosts.map(post => (
-                        <div key={post.id} className="post-card">
-                            <Post post={post} onDelete={handleDelete} />
-                        </div>
-                    ))}
-                </div>
+                <>
+                    <div className="posts-grid">
+                        {currentPosts.map(post => (
+                            <div key={post.id} className="post-card">
+                                <Post post={post} onDelete={handleDelete} />
+                            </div>
+                        ))}
+                    </div>
+                    <nav className="pagination">
+                        <ul className="pagination-list">
+                            {pageNumbers.map(number => (
+                                <li key={number} className="pagination-item">
+                                    <button onClick={() => paginate(number)} className="pagination-link">
+                                        {number}
+                                    </button>
+                                </li>
+                            ))}
+                        </ul>
+                    </nav>
+                </>
             ) : (
                 <p>No posts found.</p>
             )}
