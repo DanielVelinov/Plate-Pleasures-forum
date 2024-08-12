@@ -127,6 +127,11 @@ export default function Post({ post, onDelete }) {
                     {isExpanded ? 'See Less' : 'See More'}
                 </button>
             )}
+            {(userData?.handle === post.author || userData?.isAdmin) && (
+                    <>
+                        <button className="edit-btn" onClick={toggleEdit}>{isEditing ? 'Cancel' : 'Edit'}</button>
+                    </>
+                )}
             <p className="post-author">Posted By: {authorName} on {formattedDate}</p>
             <div className="post-actions">
                 <button
@@ -146,7 +151,6 @@ export default function Post({ post, onDelete }) {
                 {(userData?.handle === post.author || userData?.isAdmin) && (
                     <>
                         <button className="delete-btn" onClick={handleDelete}>Delete</button>
-                        <button className="edit-btn" onClick={toggleEdit}>{isEditing ? 'Cancel' : 'Edit'}</button>
                     </>
                 )}
             </div>
