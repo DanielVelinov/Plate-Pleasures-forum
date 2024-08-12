@@ -109,6 +109,7 @@ export default function AllPosts() {
                     <option value="Salads">Salads</option>
                     <option value="Main courses">Main courses</option>
                     <option value="Vegetarian">Vegetarian</option>
+                    <option value="Dessert">Dessert</option>
                 </select>
 
                 <label htmlFor="sort">Sort by: </label>

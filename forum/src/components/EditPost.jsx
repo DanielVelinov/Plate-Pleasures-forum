@@ -95,6 +95,7 @@ export default function EditPost({ post, onSave }) {
                 <option value="Salads">Salads</option>
                 <option value="Main courses">Main courses</option>
                 <option value="Vegetarian">Vegetarian</option>
+                <option value="Dessert">Dessert</option>
             </select><br /><br />
             <label htmlFor="tags">Tags: </label>
             <input
