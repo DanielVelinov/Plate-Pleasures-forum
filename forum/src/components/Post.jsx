@@ -156,7 +156,6 @@ export default function Post({ post, onDelete }) {
             </div>
             {isEditing && <EditPost post={post} onSave={handleSave} />}
             <Comments postId={post.id} postAuthor={post.author} />
-            <p className="post-date">Created on: {formattedDate}</p>
         </div>
     );
 }

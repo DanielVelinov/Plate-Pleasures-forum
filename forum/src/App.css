@@ -86,3 +86,10 @@ button:focus-visible {
   margin: 10px 0;
   border-radius: 8px;
 }
+
+.post-title {
+  font-size: 20px;
+  font-weight: bold; 
+  color: #ffffff; 
+  margin-bottom: 10px; 
+}
