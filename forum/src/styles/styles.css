@@ -1169,3 +1169,51 @@ footer {
 .filters-container button:hover {
     background-color: var(--button-bg-hover-color);
 }
+.sidebar-icon-container {
+    position: relative;
+    display: inline-block;
+}
+
+.tooltip {
+    visibility: hidden;
+    width: 100px;
+    background-color: transparent;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px;
+    position: absolute;
+    z-index: 1;
+    bottom: 125%;
+    left: 50%;
+    margin-left: -50px;
+    opacity: 0;
+    transition: opacity 0.3s;
+    font-size: 17px; 
+    text-transform: none; 
+    border: none; 
+    box-shadow: none; 
+}
+
+.tooltip::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: black transparent transparent transparent; /* Уверете се, че този стил съвпада с фона */
+}
+
+.sidebar-icon-container:hover .tooltip {
+    visibility: visible;
+    opacity: 1;
+}
+
+
+
+.sidebar-icon-container a:focus,
+.sidebar-icon-container button:focus {
+    outline: none; /* Премахва черната линия при фокус */
+}

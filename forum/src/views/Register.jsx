@@ -50,7 +50,8 @@ export default function Register() {
         email: user.email,
         firstName: user.firstName,
         lastName: user.lastName,
-        isAdmin 
+        isAdmin,
+        handle: user.firstName || 'defaultHandle' 
       });
       
       setAppState({ user: credential.user, userData: null, isAdmin }); 

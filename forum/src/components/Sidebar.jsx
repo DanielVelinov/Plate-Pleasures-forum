@@ -4,7 +4,6 @@ import { FaHome, FaCommentAlt, FaThumbsUp, FaClipboardList, FaSignOutAlt, FaSign
 import { AppContext } from '../state/app.context';
 import { logoutUser } from '../services/auth.service';
 
-
 export default function Sidebar() {
     const { user, userData, setAppState } = useContext(AppContext);
     const navigate = useNavigate();
@@ -33,13 +32,13 @@ export default function Sidebar() {
                     <div className="sidebar-icon-container">
                         <NavLink to="/top-commented" className={({ isActive }) => (isActive ? 'sidebar-icon active' : 'sidebar-icon')}>
                             <FaCommentAlt />
-                            <span className="tooltip">Top Commented Posts</span>
+                            <span className="tooltip">Most Commented</span>
                         </NavLink>
                     </div>
                     <div className="sidebar-icon-container">
                         <NavLink to="/top-liked" className={({ isActive }) => (isActive ? 'sidebar-icon active' : 'sidebar-icon')}>
                             <FaThumbsUp />
-                            <span className="tooltip">Top Liked Posts</span>
+                            <span className="tooltip">Most Liked</span>
                         </NavLink>
                     </div>
                     <div className="sidebar-icon-container">
