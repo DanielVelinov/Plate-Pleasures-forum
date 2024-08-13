@@ -1,5 +1,6 @@
 import { ref as dbRef, push, get, set, update, remove, query, orderByChild, limitToLast } from 'firebase/database';
 import { db } from '../config/firebase-config';
+import { equalTo } from 'firebase/database';
 
 
 
@@ -295,3 +296,26 @@ export const getRecentPosts = async () => {
     });
     return posts.sort((a, b) => new Date(b.createdOn) - new Date(a.createdOn));
 }; 
+export const getPostsByUserHandle = async (handle) => {
+    try {
+        const postsRef = query(dbRef(db, 'posts'), orderByChild('author'), equalTo(handle));
+        const snapshot = await get(postsRef);
+
+        if (!snapshot.exists()) {
+            return [];
+        }
+
+        const posts = [];
+        snapshot.forEach(childSnapshot => {
+            posts.push({
+                id: childSnapshot.key,
+                ...childSnapshot.val()
+            });
+        });
+
+        return posts;
+    } catch (error) {
+        console.error('Error fetching posts by user handle:', error);
+        throw new Error('Unable to fetch posts.');
+    }
+};

@@ -2,6 +2,7 @@ import React, { useEffect, useState, useContext } from 'react';
 import PropTypes from 'prop-types';
 import { AppContext } from '../state/app.context';
 import { getAllUsers, toggleUserBlockStatus } from '../services/users.service';
+import { nanoid } from 'nanoid';
 
 export default function AdminPanel() {
     const { userData } = useContext(AppContext);
@@ -82,7 +83,7 @@ export default function AdminPanel() {
             </div>
             <ul className="user-list">
                 {filteredUsers.map(user => (
-                    <li key={user.uid || user.email} className="user-item">
+                    <li key={nanoid()} className="user-item">
                         <span className="user-info">
                             {user.firstName} {user.lastName} ({user.email})
                         </span>

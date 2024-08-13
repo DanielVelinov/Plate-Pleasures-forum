@@ -1,9 +1,9 @@
 import React, { useContext } from 'react';
-import { NavLink } from 'react-router-dom';
-import { FaHome, FaClipboardList, FaPlus, FaSignOutAlt, FaUserShield, FaUser, FaUserPlus } from 'react-icons/fa'; // Добавяне на FaUserPlus за Register
+import { NavLink, useNavigate } from 'react-router-dom';
+import { FaHome, FaCommentAlt, FaThumbsUp, FaClipboardList, FaSignOutAlt, FaSignInAlt, FaUserPlus } from 'react-icons/fa';
 import { AppContext } from '../state/app.context';
 import { logoutUser } from '../services/auth.service';
-import { useNavigate } from "react-router-dom";
+
 
 export default function Sidebar() {
     const { user, userData, setAppState } = useContext(AppContext);
@@ -23,74 +23,53 @@ export default function Sidebar() {
     return (
         <div className="sidebar">
             <div className="sidebar-icon-container">
-                <NavLink
-                    to="/"
-                    className={({ isActive }) => (isActive ? 'sidebar-icon active' : 'sidebar-icon')}
-                >
+                <NavLink to="/" className={({ isActive }) => (isActive ? 'sidebar-icon active' : 'sidebar-icon')}>
                     <FaHome />
                     <span className="tooltip">Home</span>
                 </NavLink>
             </div>
-            <div className="sidebar-icon-container">
-                <NavLink
-                    to="/posts"
-                    className={({ isActive }) => (isActive ? 'sidebar-icon active' : 'sidebar-icon')}
-                >
-                    <FaClipboardList />
-                    <span className="tooltip">All Posts</span>
-                </NavLink>
-            </div>
-            <div className="sidebar-icon-container">
-                <NavLink
-                    to="/posts-create"
-                    className={({ isActive }) => (isActive ? 'sidebar-icon active' : 'sidebar-icon')}
-                >
-                    <FaPlus />
-                    <span className="tooltip">Create Post</span>
-                </NavLink>
-            </div>
-            {userData?.isAdmin && (
-                <div className="sidebar-icon-container">
-                    <NavLink
-                        to="/admin"
-                        className={({ isActive }) => (isActive ? 'sidebar-icon active' : 'sidebar-icon')}
-                    >
-                        <FaUserShield />
-                        <span className="tooltip">Admin Panel</span>
-                    </NavLink>
-                </div>
-            )}
             {user ? (
                 <>
                     <div className="sidebar-icon-container">
-                        <NavLink
-                            to="/profile"
-                            className={({ isActive }) => (isActive ? 'sidebar-icon active' : 'sidebar-icon')}
-                        >
-                            <FaUser />
-                            <span className="tooltip">Profile</span>
+                        <NavLink to="/top-commented" className={({ isActive }) => (isActive ? 'sidebar-icon active' : 'sidebar-icon')}>
+                            <FaCommentAlt />
+                            <span className="tooltip">Top Commented Posts</span>
                         </NavLink>
                     </div>
                     <div className="sidebar-icon-container">
-                        <button
-                            className="sidebar-icon"
-                            onClick={logout}
-                        >
+                        <NavLink to="/top-liked" className={({ isActive }) => (isActive ? 'sidebar-icon active' : 'sidebar-icon')}>
+                            <FaThumbsUp />
+                            <span className="tooltip">Top Liked Posts</span>
+                        </NavLink>
+                    </div>
+                    <div className="sidebar-icon-container">
+                        <NavLink to="/my-posts" className={({ isActive }) => (isActive ? 'sidebar-icon active' : 'sidebar-icon')}>
+                            <FaClipboardList />
+                            <span className="tooltip">My Posts</span>
+                        </NavLink>
+                    </div>
+                    <div className="sidebar-icon-container">
+                        <button className="sidebar-icon" onClick={logout}>
                             <FaSignOutAlt />
                             <span className="tooltip">Logout</span>
                         </button>
                     </div>
                 </>
             ) : (
-                <div className="sidebar-icon-container">
-                    <NavLink
-                        to="/register"
-                        className={({ isActive }) => (isActive ? 'sidebar-icon active' : 'sidebar-icon')}
-                    >
-                        <FaUserPlus />
-                        <span className="tooltip">Register</span>
-                    </NavLink>
-                </div>
+                <>
+                    <div className="sidebar-icon-container">
+                        <NavLink to="/login" className={({ isActive }) => (isActive ? 'sidebar-icon active' : 'sidebar-icon')}>
+                            <FaSignInAlt />
+                            <span className="tooltip">Login</span>
+                        </NavLink>
+                    </div>
+                    <div className="sidebar-icon-container">
+                        <NavLink to="/register" className={({ isActive }) => (isActive ? 'sidebar-icon active' : 'sidebar-icon')}>
+                            <FaUserPlus />
+                            <span className="tooltip">Register</span>
+                        </NavLink>
+                    </div>
+                </>
             )}
         </div>
     );

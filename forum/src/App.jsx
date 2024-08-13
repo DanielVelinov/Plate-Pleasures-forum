@@ -21,6 +21,7 @@ import TopLikedPostsPage from './views/TopLikedPostsPage'; // Добавяне �
 import { auth } from './config/firebase-config';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { getUserData } from './services/users.service';
+import MyPosts from './views/MyPosts';
 
 function App() {
   const [appState, setAppState] = useState({
@@ -69,6 +70,7 @@ function App() {
             <Route path='/profile' element={<Authenticated><Profile /></Authenticated>} /> {/* Profile route */}
             <Route path='/top-commented' element={<TopCommentedPostsPage />} /> {/* Нов рут за TopCommentedPostsPage */}
             <Route path='/top-liked' element={<TopLikedPostsPage />} /> {/* Нов рут за TopLikedPostsPage */}
+            <Route path='/my-posts' element={<Authenticated><MyPosts /></Authenticated>} />
             <Route path='/login' element={<Login />} />
             <Route path='/register' element={<Register />} />
             <Route path='*' element={<NotFound />} />
