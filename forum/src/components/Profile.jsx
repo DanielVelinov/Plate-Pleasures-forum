@@ -1,31 +1,22 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { AppContext } from '../state/app.context';
-import { saveUserDetails, getUserData } from '../services/users.service';
+import { saveUserDetails, getUserData, updateUserDetails } from '../services/users.service';
 import defaultProfilePicture from '../assets/profile-picture.jpg/profilePicture.png';
 import { uploadProfilePhoto } from '../services/storage.service';
 
 export default function Profile() {
     const { user, userData, setAppState } = useContext(AppContext);
-    const [profile, setProfile] = useState({
-        handle: userData.handle || '',  
-        lastName: userData.lastName || '',
-        phoneNumber: userData.phoneNumber || '',
-        profilePicture: userData.profilePicture || null,
-    });
+    const [profile, setProfile] = useState(() => ({ ...userData }));
+    const [updatedProfile, setUpdatedProfile] = useState(() => ({ ...userData }))
     const [newProfilePicture, setNewProfilePicture] = useState(null);
 
     useEffect(() => {
-        // Извличане на най-новите данни от базата данни при първоначално зареждане на страницата
+        
         const fetchUserData = async () => {
-            if (!userData || !userData.handle) {  // Проверете дали данните вече са налични
+            if (!userData || !userData.handle) {  
                 try {
                     const freshUserData = await getUserData(user.uid);
-                    setProfile({
-                        handle: freshUserData.handle || '',
-                        lastName: freshUserData.lastName || '',
-                        phoneNumber: freshUserData.phoneNumber || '',
-                        profilePicture: freshUserData.profilePicture || null,
-                    });
+                    setProfile({ ...freshUserData });
                     setAppState(prevState => ({
                         ...prevState,
                         userData: freshUserData,
@@ -37,11 +28,11 @@ export default function Profile() {
         };
 
         fetchUserData();
-    }, [user.uid, setAppState, userData]); // Уверете се, че се извиква само когато данните не са налични
+    }, [user.uid, setAppState, userData]); 
 
     const updateProfile = (key, value) => {
-        setProfile({
-            ...profile,
+        setUpdatedProfile({
+            ...updatedProfile,
             [key]: value,
         });
     };
@@ -58,19 +49,23 @@ export default function Profile() {
                 profilePictureUrl = await uploadProfilePhoto(user.uid, newProfilePicture);
                 setProfile(prevProfile => ({
                     ...prevProfile,
-                    profilePicture: profilePictureUrl, 
+                    profilePicture: profilePictureUrl,
                 }));
             }
 
-            await saveUserDetails({
-                handle: profile.handle,  
-                uid: user.uid,
-                email: user.email,
-                lastName: profile.lastName,
-                phoneNumber: profile.phoneNumber,
-                profilePicture: profilePictureUrl,
-            });
+            if (updatedProfile.firstName !== profile.firstName) {
+                await updateUserDetails(userData.handle, 'firstName', updatedProfile.firstName);
+            }
 
+            if (updatedProfile.lastName !== profile.lastName) {
+                await updateUserDetails(userData.handle, 'lastName', updatedProfile.lastName);
+            }
+
+            if (updatedProfile.phoneNumber !== profile.phoneNumber) {
+                await updateUserDetails(userData.handle, 'phoneNumber', updatedProfile.phoneNumber);
+            }
+
+        
             setAppState(prevState => ({
                 ...prevState,
                 userData: {
@@ -107,20 +102,20 @@ export default function Profile() {
                     />
                     <input type="file" accept="image/*" onChange={handleProfilePictureChange} />
                 </div>
-                <label htmlFor="handle">First Name (Username): </label>
+                <label htmlFor="firstName">First Name</label>
                 <input
                     className="input-field"
-                    value={profile.handle}  
-                    onChange={e => updateProfile('handle', e.target.value)}  
+                    value={updatedProfile.firstName}
+                    onChange={e => updateProfile('firstName', e.target.value)}
                     type="text"
-                    name="handle"
-                    id="handle"
+                    name="firstName"
+                    id="firstName"
                     placeholder="Enter your first name or username"
                 /><br />
                 <label htmlFor="lastName">Last Name: </label>
                 <input
                     className="input-field"
-                    value={profile.lastName}
+                    value={updatedProfile.lastName}
                     onChange={e => updateProfile('lastName', e.target.value)}
                     type="text"
                     name="lastName"
@@ -130,7 +125,7 @@ export default function Profile() {
                 <label htmlFor="phoneNumber">Phone Number: </label>
                 <input
                     className="input-field"
-                    value={profile.phoneNumber}
+                    value={updatedProfile.phoneNumber}
                     onChange={e => updateProfile('phoneNumber', e.target.value)}
                     type="text"
                     name="phoneNumber"

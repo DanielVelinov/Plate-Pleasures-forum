@@ -63,6 +63,28 @@ export const saveUserDetails = async ({ handle, uid, email, lastName, phoneNumbe
   }
 };
 
+
+/**
+* Updates a specific detail of a user in the database.
+*
+* @param {string} handle - The handle of the user to update.
+* @param {string} target - The field of the user to update.
+* @param {any} value - The new value for the specified field.
+* @returns {Promise<void>} A promise that resolves when the user detail is updated.
+* @throws {Error} If there is an error updating the user detail in the database.
+*/
+export const updateUserDetails = async (handle, target, value) => {
+  try {
+    const updateObject = {
+      [`users/${handle}/${target}`]: value,
+    }
+
+    await update(ref(db), updateObject);
+  } catch (error) {
+    console.error('Error saving user details:', error.message);
+  }
+}
+
 export const getAllUsers = async () => {
   try {
     const snapshot = await get(ref(db, 'users'));
