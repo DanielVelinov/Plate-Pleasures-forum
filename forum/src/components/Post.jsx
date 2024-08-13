@@ -7,7 +7,7 @@ import EditPost from './EditPost';
 import { dislikePost, likePost, unlikePost, undislikePost, deletePost } from '../services/posts.service';
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faThumbsUp, faThumbsDown } from '@fortawesome/free-solid-svg-icons';
+import { faThumbsUp, faThumbsDown, faTrash } from '@fortawesome/free-solid-svg-icons';
 
 export default function Post({ post, onDelete }) {
     const { userData } = useContext(AppContext);
@@ -150,12 +150,15 @@ export default function Post({ post, onDelete }) {
                 </button>
                 {(userData?.handle === post.author || userData?.isAdmin) && (
                     <>
-                        <button className="delete-btn" onClick={handleDelete}>Delete</button>
+                        <button className="delete-btn" onClick={handleDelete}>
+                            <FontAwesomeIcon icon={faTrash} />
+                        </button>
                     </>
                 )}
             </div>
             {isEditing && <EditPost post={post} onSave={handleSave} />}
             <Comments postId={post.id} postAuthor={post.author} />
+
         </div>
     );
 }

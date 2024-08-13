@@ -550,41 +550,48 @@ footer {
 }
 
 /* Стилове за Like и Dislike бутони */
-.like-btn, .dislike-btn {
-    background-color: transparent; 
-    color: white; 
-    border: none; 
+.like-btn,
+.dislike-btn {
+    background-color: transparent;
+    color: white;
+    border: none;
     padding: 10px 20px;
     cursor: pointer;
     margin-right: 10px;
     border-radius: 5px;
     display: inline-flex;
     align-items: center;
-    gap: 5px; /* Разстояние между иконата и числото */
+    gap: 5px;
+    /* Разстояние между иконата и числото */
     transition: color 0.3s ease;
 }
 
 
 
-.like-btn.active, .dislike-btn.active {
-    color: #ff914d; 
+.like-btn.active,
+.dislike-btn.active {
+    color: #ff914d;
 }
 
-.like-btn:hover, .dislike-btn:hover {
-    color: #ff914d; 
+.like-btn:hover,
+.dislike-btn:hover {
+    color: #ff914d;
 }
 
-.post-actions, .comment-actions {
+.post-actions,
+.comment-actions {
     display: flex;
     align-items: center;
     gap: 10px;
 }
 
-.post-actions span, .comment-actions span {
+.post-actions span,
+.comment-actions span {
     margin-left: 5px;
     font-size: 16px;
     color: white;
 }
+
 .post-actions {
     display: flex;
     align-items: center;
@@ -654,23 +661,33 @@ footer {
 .top-posts-button:hover {
     background-color: var(--button-bg-hover-color);
 }
-.like-btn, .dislike-btn {
-    background-color: transparent; /* Прозрачен фон по подразбиране */
-    color: white; /* Бял текст по подразбиране */
-    border: none; /* Без рамка */
+
+.like-btn,
+.dislike-btn {
+    background-color: transparent;
+    /* Прозрачен фон по подразбиране */
+    color: white;
+    /* Бял текст по подразбиране */
+    border: none;
+    /* Без рамка */
     padding: 10px;
     cursor: pointer;
     margin-right: 5px;
     border-radius: 5px;
-    transition: color 0.3s ease; /* Плавен преход на цвета */
+    transition: color 0.3s ease;
+    /* Плавен преход на цвета */
 }
 
-.like-btn.active, .dislike-btn.active {
-    color: #ff914d; /* Оранжев цвят при активен бутон */
+.like-btn.active,
+.dislike-btn.active {
+    color: #ff914d;
+    /* Оранжев цвят при активен бутон */
 }
 
-.like-btn:hover, .dislike-btn:hover {
-    color: #ff914d; /* Оранжев цвят при hover */
+.like-btn:hover,
+.dislike-btn:hover {
+    color: #ff914d;
+    /* Оранжев цвят при hover */
 }
 
 .post-actions {
@@ -678,6 +695,7 @@ footer {
     align-items: center;
     gap: 10px;
 }
+
 .pagination {
     display: flex;
     justify-content: center;
@@ -708,6 +726,7 @@ footer {
 .pagination-link:hover {
     background-color: var(--button-bg-hover-color);
 }
+
 .create-post-page .form-section {
     display: flex;
     flex-direction: column;
@@ -731,8 +750,8 @@ footer {
     color: var(--text-secondary-color);
 }
 
-.create-post-page .input-field, 
-.create-post-page .add-tag-btn, 
+.create-post-page .input-field,
+.create-post-page .add-tag-btn,
 .create-post-page .create-post-btn {
     padding: 12px;
     border-radius: var(--border-radius);
@@ -808,15 +827,18 @@ footer {
 .create-post-page .remove-tag-btn:hover {
     color: var(--button-bg-hover-color);
 }
+
 /* Upload Image Section */
 .create-post-page .upload-image-label {
     display: inline-block;
-    padding: 10px 5px; /* Направих бутона по-малък */
+    padding: 10px 5px;
+    /* Направих бутона по-малък */
     background-color: var(--button-bg-color);
     color: var(--text-color);
     border-radius: var(--border-radius);
     cursor: pointer;
-    font-size: 1rem; /* Малко по-малък текст */
+    font-size: 1rem;
+    /* Малко по-малък текст */
     text-align: center;
     transition: background-color var(--transition), transform 0.2s ease;
     margin-top: 10px;
@@ -828,7 +850,8 @@ footer {
 }
 
 .create-post-page .upload-image-input {
-    display: none; /* Скрити Input, показва се само стилизираният бутон */
+    display: none;
+    /* Скрити Input, показва се само стилизираният бутон */
 }
 
 
@@ -838,6 +861,7 @@ footer {
     border-radius: var(--border-radius);
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
+
 .create-post-page .remove-tag-btn {
     background-color: var(--button-bg-color);
     border: none;
@@ -853,6 +877,7 @@ footer {
     background-color: var(--button-bg-hover-color);
     transform: translateY(-2px);
 }
+
 .comments-title {
     cursor: pointer;
     margin-bottom: 10px;
@@ -911,7 +936,9 @@ footer {
 .reply-delete-btn:hover {
     color: var(--button-bg-hover-color);
 }
-.login-page, .register-page {
+
+.login-page,
+.register-page {
     max-width: 400px;
     margin: 50px auto;
     padding: 20px;
@@ -920,7 +947,8 @@ footer {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-.login-page h1, .register-page h1 {
+.login-page h1,
+.register-page h1 {
     color: var(--text-color);
     text-align: center;
     margin-bottom: 20px;
@@ -946,7 +974,8 @@ footer {
     box-shadow: 0 0 5px var(--button-bg-color);
 }
 
-.login-btn, .register-btn {
+.login-btn,
+.register-btn {
     background-color: var(--button-bg-color);
     color: var(--text-color);
     padding: 10px;
@@ -957,7 +986,8 @@ footer {
     font-size: 1.1rem;
 }
 
-.login-btn:hover, .register-btn:hover {
+.login-btn:hover,
+.register-btn:hover {
     background-color: var(--button-bg-hover-color);
 }
 
@@ -970,7 +1000,9 @@ footer {
 .form-section input::placeholder {
     color: var(--text-secondary-color);
 }
-.login-page, .register-page {
+
+.login-page,
+.register-page {
     max-width: 400px;
     margin: 50px auto;
     padding: 20px;
@@ -979,7 +1011,8 @@ footer {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-.login-page h1, .register-page h1 {
+.login-page h1,
+.register-page h1 {
     color: var(--text-color);
     text-align: center;
     margin-bottom: 20px;
@@ -1005,7 +1038,8 @@ footer {
     box-shadow: 0 0 5px var(--button-bg-color);
 }
 
-.login-btn, .register-btn {
+.login-btn,
+.register-btn {
     background-color: var(--button-bg-color);
     color: var(--text-color);
     padding: 10px;
@@ -1016,7 +1050,8 @@ footer {
     font-size: 1.1rem;
 }
 
-.login-btn:hover, .register-btn:hover {
+.login-btn:hover,
+.register-btn:hover {
     background-color: var(--button-bg-hover-color);
 }
 
@@ -1028,4 +1063,67 @@ footer {
 
 .form-section input::placeholder {
     color: var(--text-secondary-color);
+}
+
+.comment-delete-btn,
+.reply-delete-btn,
+.delete-btn {
+    background-color: transparent;
+    color: var(--text-secondary-color);
+    border: none;
+    cursor: pointer;
+    transition: color var(--transition);
+}
+
+.comment-delete-btn:hover,
+.reply-delete-btn:hover,
+.delete-btn:hover {
+    color: var(--button-bg-hover-color);
+}
+
+.comment-delete-btn svg,
+.reply-delete-btn svg,
+.delete-btn svg {
+    font-size: 1.2rem;
+    /* размер на иконата */
+}
+
+.comment-delete-btn,
+.comment-reply-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    margin-left: 5px;
+}
+
+.comment-reply-btn {
+    display: inline-flex;
+    align-items: center;
+    color: #ff914d;
+    /* или друг цвят по ваш избор */
+}
+
+.comment-reply-btn:hover {
+    color: #ff7d2a;
+    /* цвят при hover */
+}
+
+.comment-delete-btn,
+.comment-reply-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    margin-left: 5px;
+}
+
+.comment-reply-btn {
+    display: inline-flex;
+    align-items: center;
+    color: #ff914d;
+    /* или друг цвят по ваш избор */
+}
+
+.comment-reply-btn:hover {
+    color: #ff7d2a;
+    /* цвят при hover */
 }

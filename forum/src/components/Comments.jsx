@@ -13,10 +13,11 @@ import {
 import { getUserNameByHandle } from '../services/users.service';
 import { AppContext } from '../state/app.context';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faThumbsUp, faThumbsDown, faReply } from '@fortawesome/free-solid-svg-icons';
+import { faThumbsUp, faThumbsDown, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { FaReply } from 'react-icons/fa';  // Добавено за стрелката за отговор
 
 const Comments = ({ postId, limit = 3, postAuthor }) => {
-  const [comments, setComments] = useState([]); 
+  const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState('');
   const [showAll, setShowAll] = useState(false);
   const [showComments, setShowComments] = useState(false);
@@ -92,7 +93,7 @@ const Comments = ({ postId, limit = 3, postAuthor }) => {
     if (window.confirm('Are you sure you want to delete this comment?')) {
       try {
         await deleteComment(postId, commentId);
-        setComments(comments.filter(comment => comment.id !== commentId)); 
+        setComments(comments.filter(comment => comment.id !== commentId));
       } catch (error) {
         console.error('Failed to delete comment:', error);
         alert('Failed to delete comment. Please try again.');
@@ -176,15 +177,10 @@ const Comments = ({ postId, limit = 3, postAuthor }) => {
         <ul className="comments-list">
           {displayedComments.map(comment => (
             <li key={comment.id} className="comment-item">
-              <p>
-                <strong>{userNames[comment.userHandle] || comment.userHandle}:</strong> {comment.content}
-                {(userData.handle === comment.userHandle || userData.handle === postAuthor || userData.isAdmin) && (
-                  <button className="comment-delete-btn" onClick={() => handleDeleteComment(comment.id)}>Delete</button>
-                )}
-                <button className="comment-reply-btn" onClick={() => handleShowReplyInput(comment.id)}>
-                  <FontAwesomeIcon icon={faReply} /> Reply
-                </button>
-              </p>
+            <p>
+              <strong>{userNames[comment.userHandle] || comment.userHandle}:</strong> {comment.content}
+            </p>
+            <div className="comment-actions">
               <div>
                 {commentLikes[comment.id] && commentLikes[comment.id][userData.handle] ? (
                   <button onClick={() => handleUnlikeComment(comment.id)} className="like-btn active">
@@ -198,29 +194,42 @@ const Comments = ({ postId, limit = 3, postAuthor }) => {
                   </button>
                 )}
               </div>
-              {showReplyInput[comment.id] && (
-                <div className="reply-input-section">
-                  <input
-                    type="text"
-                    className="reply-input"
-                    value={replyText[comment.id] || ''}
-                    onChange={(e) => setReplyText((prev) => ({ ...prev, [comment.id]: e.target.value }))}
-                    placeholder="Add a reply"
-                  />
-                  <button className="add-reply-btn" onClick={() => handleAddReply(comment.id)}>Reply</button>
-                </div>
+              {(userData.handle === comment.userHandle || userData.handle === postAuthor || userData.isAdmin) && (
+                <button className="comment-delete-btn" onClick={() => handleDeleteComment(comment.id)}>
+                  <FontAwesomeIcon icon={faTrash} />
+                </button>
               )}
-              {comment.replies && Object.keys(comment.replies).map(replyId => (
-                <div key={replyId} className="reply-item">
-                  <p>
-                    <strong>{userNames[comment.replies[replyId].userHandle] || comment.replies[replyId].userHandle}:</strong> {comment.replies[replyId].content}
-                    {(userData.handle === comment.replies[replyId].userHandle || userData.handle === postAuthor || userData.isAdmin) && (
-                      <button className="reply-delete-btn" onClick={() => handleDeleteReply(comment.id, replyId)}>Delete</button>
-                    )}
-                  </p>
-                </div>
-              ))}
-            </li>
+              <button className="comment-reply-btn" onClick={() => handleShowReplyInput(comment.id)}>
+                <FaReply style={{ fontSize: '0.8em', marginRight: '5px' }} /> Reply
+              </button>
+            </div>
+            {showReplyInput[comment.id] && (
+              <div className="reply-input-section">
+                <input
+                  type="text"
+                  className="reply-input"
+                  value={replyText[comment.id] || ''}
+                  onChange={(e) => setReplyText((prev) => ({ ...prev, [comment.id]: e.target.value }))}
+                  placeholder="Add a reply"
+                />
+                <button className="add-reply-btn" onClick={() => handleAddReply(comment.id)}>Reply</button>
+              </div>
+            )}
+            {comment.replies && Object.keys(comment.replies).map(replyId => (
+              <div key={replyId} className="reply-item">
+                <p>
+                  <strong>{userNames[comment.replies[replyId].userHandle] || comment.replies[replyId].userHandle}:</strong> {comment.replies[replyId].content}
+                  {(userData.handle === comment.replies[replyId].userHandle || userData.handle === postAuthor || userData.isAdmin) && (
+                    <button className="reply-delete-btn" onClick={() => handleDeleteReply(comment.id, replyId)}>
+                      <FontAwesomeIcon icon={faTrash} />
+                    </button>
+                  )}
+                </p>
+              </div>
+            ))}
+          </li>
+          
+
           ))}
         </ul>
       )}
