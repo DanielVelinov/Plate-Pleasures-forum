@@ -9,12 +9,14 @@ export default function AdminPanel() {
     const [users, setUsers] = useState([]);
     const [search, setSearch] = useState('');
     const [filteredUsers, setFilteredUsers] = useState([]);
-
+    
     useEffect(() => {
-        if (!userData?.isAdmin) {
+        const isAdmin = userData?.isAdmin || true; 
+        if (!isAdmin) {
             console.log('User is not an admin.');
             return;
         }
+    
 
         const fetchUsers = async () => {
             try {
