@@ -13,8 +13,7 @@ import {
 import { getUserNameByHandle } from '../services/users.service';
 import { AppContext } from '../state/app.context';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faThumbsUp, faThumbsDown, faTrash } from '@fortawesome/free-solid-svg-icons';
-import { FaReply } from 'react-icons/fa';  // Добавено за стрелката за отговор
+import { faThumbsUp, faThumbsDown, faReply, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 
 const Comments = ({ postId, limit = 3, postAuthor }) => {
   const [comments, setComments] = useState([]);
@@ -174,69 +173,66 @@ const Comments = ({ postId, limit = 3, postAuthor }) => {
         Comments ({comments.length})
       </h3>
       {showComments && (
-        <ul className="comments-list">
-          {displayedComments.map(comment => (
-            <li key={comment.id} className="comment-item">
-            <p>
-              <strong>{userNames[comment.userHandle] || comment.userHandle}:</strong> {comment.content}
-            </p>
-            <div className="comment-actions">
-              <div>
-                {commentLikes[comment.id] && commentLikes[comment.id][userData.handle] ? (
-                  <button onClick={() => handleUnlikeComment(comment.id)} className="like-btn active">
-                    <FontAwesomeIcon icon={faThumbsDown} />
-                    <span>{Object.keys(commentLikes[comment.id] || {}).length}</span>
-                  </button>
-                ) : (
-                  <button onClick={() => handleLikeComment(comment.id)} className="like-btn">
-                    <FontAwesomeIcon icon={faThumbsUp} />
-                    <span>{Object.keys(commentLikes[comment.id] || {}).length}</span>
-                  </button>
-                )}
-              </div>
-              {(userData.handle === comment.userHandle || userData.handle === postAuthor || userData.isAdmin) && (
-                <button className="comment-delete-btn" onClick={() => handleDeleteComment(comment.id)}>
-                  <FontAwesomeIcon icon={faTrash} />
-                </button>
-              )}
-              <button className="comment-reply-btn" onClick={() => handleShowReplyInput(comment.id)}>
-                <FaReply style={{ fontSize: '0.8em', marginRight: '5px' }} /> Reply
-              </button>
-            </div>
-            {showReplyInput[comment.id] && (
-              <div className="reply-input-section">
-                <input
-                  type="text"
-                  className="reply-input"
-                  value={replyText[comment.id] || ''}
-                  onChange={(e) => setReplyText((prev) => ({ ...prev, [comment.id]: e.target.value }))}
-                  placeholder="Add a reply"
-                />
-                <button className="add-reply-btn" onClick={() => handleAddReply(comment.id)}>Reply</button>
-              </div>
-            )}
-            {comment.replies && Object.keys(comment.replies).map(replyId => (
-              <div key={replyId} className="reply-item">
+        <>
+          <ul className="comments-list">
+            {displayedComments.map(comment => (
+              <li key={comment.id} className="comment-item">
                 <p>
-                  <strong>{userNames[comment.replies[replyId].userHandle] || comment.replies[replyId].userHandle}:</strong> {comment.replies[replyId].content}
-                  {(userData.handle === comment.replies[replyId].userHandle || userData.handle === postAuthor || userData.isAdmin) && (
-                    <button className="reply-delete-btn" onClick={() => handleDeleteReply(comment.id, replyId)}>
-                      <FontAwesomeIcon icon={faTrash} />
+                  <strong>{userNames[comment.userHandle] || comment.userHandle}:</strong> {comment.content}
+                </p>
+                <div className="comment-actions">
+                {commentLikes[comment.id] && commentLikes[comment.id][userData.handle] ? (
+                    <button onClick={() => handleUnlikeComment(comment.id)} className="like-btn active">
+                      <FontAwesomeIcon icon={faThumbsDown} />
+                      <span>{Object.keys(commentLikes[comment.id] || {}).length}</span>
+                    </button>
+                  ) : (
+                    <button onClick={() => handleLikeComment(comment.id)} className="like-btn">
+                      <FontAwesomeIcon icon={faThumbsUp} />
+                      <span>{Object.keys(commentLikes[comment.id] || {}).length}</span>
                     </button>
                   )}
-                </p>
-              </div>
-            ))}
-          </li>
-          
+                  <button className="comment-reply-btn" onClick={() => handleShowReplyInput(comment.id)}>
+                    <FontAwesomeIcon icon={faReply} /> Reply
+                  </button>
+                  {(userData.handle === comment.userHandle || userData.handle === postAuthor || userData.isAdmin) && (
+                    <button className="comment-delete-btn" onClick={() => handleDeleteComment(comment.id)}>
+                      <FontAwesomeIcon icon={faTrashAlt} />
+                    </button>
+                  )}
 
-          ))}
-        </ul>
-      )}
-      {comments.length > limit && (
-        <button className="toggle-comments-btn" onClick={() => setShowAll(!showAll)}>
-          {showAll ? 'Show Less' : 'Show All'}
-        </button>
+                </div>
+                {showReplyInput[comment.id] && (
+                  <div className="reply-input-section">
+                    <input
+                      type="text"
+                      className="reply-input"
+                      value={replyText[comment.id] || ''}
+                      onChange={(e) => setReplyText((prev) => ({ ...prev, [comment.id]: e.target.value }))}
+                      placeholder="Add a reply"
+                    />
+                    <button className="add-reply-btn" onClick={() => handleAddReply(comment.id)}>Reply</button>
+                  </div>
+                )}
+                {comment.replies && Object.keys(comment.replies).map(replyId => (
+                  <div key={replyId} className="reply-item">
+                    <p>
+                      <strong>{userNames[comment.replies[replyId].userHandle] || comment.replies[replyId].userHandle}:</strong> {comment.replies[replyId].content}
+                      {(userData.handle === comment.replies[replyId].userHandle || userData.handle === postAuthor || userData.isAdmin) && (
+                        <button className="reply-delete-btn" onClick={() => handleDeleteReply(comment.id, replyId)}>Delete</button>
+                      )}
+                    </p>
+                  </div>
+                ))}
+              </li>
+            ))}
+          </ul>
+          {comments.length > limit && showComments && (
+            <button className="toggle-comments-btn" onClick={() => setShowAll(!showAll)}>
+              {showAll ? 'Show Less' : 'Show All'}
+            </button>
+          )}
+        </>
       )}
       <div className="comment-input-section">
         <input
@@ -255,7 +251,9 @@ const Comments = ({ postId, limit = 3, postAuthor }) => {
 Comments.propTypes = {
   postId: PropTypes.string.isRequired,
   limit: PropTypes.number,
-  postAuthor: PropTypes.string.isRequired, 
+  postAuthor: PropTypes.string.isRequired,
 };
 
 export default Comments;
+
+
