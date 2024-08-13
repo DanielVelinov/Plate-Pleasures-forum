@@ -1127,3 +1127,45 @@ footer {
     color: #ff7d2a;
     /* цвят при hover */
 }
+.filters-container {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    margin-bottom: 20px;
+    background-color: var(--secondary-bg-color);
+    padding: 10px;
+    border-radius: var(--border-radius);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.filters-container label {
+    color: var(--text-secondary-color);
+    font-weight: bold;
+}
+
+.filters-container input[type="text"],
+.filters-container select {
+    background-color: var(--highlight-color);
+    border: none;
+    border-radius: var(--border-radius);
+    padding: 10px;
+    color: var(--text-color);
+}
+
+.filters-container input[type="text"]::placeholder {
+    color: var(--text-secondary-color);
+}
+
+.filters-container button {
+    background-color: var(--button-bg-color);
+    color: var(--text-color);
+    padding: 10px 20px;
+    border: none;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    transition: background-color var(--transition);
+}
+
+.filters-container button:hover {
+    background-color: var(--button-bg-hover-color);
+}
