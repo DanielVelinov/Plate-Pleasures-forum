@@ -1,4 +1,3 @@
-
 import { useContext, useState } from "react";
 import { AppContext } from "../state/app.context";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -35,7 +34,6 @@ export default function Login() {
         userData: userData[Object.keys(userData)[0]],
       });
 
-      
       if (userData[Object.keys(userData)[0]].isBlocked) {
         alert('Your account is blocked. You have limited access.');
       }

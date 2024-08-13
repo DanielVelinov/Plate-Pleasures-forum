@@ -41,8 +41,6 @@ export default function Register() {
         return;
       }
       const credential = await registerUser(user.email, user.password);
-      
- 
       const isAdmin = user.email.endsWith("@admin.com"); 
 
       await createUserHandle(user.firstName, credential.user.uid, user.email);
