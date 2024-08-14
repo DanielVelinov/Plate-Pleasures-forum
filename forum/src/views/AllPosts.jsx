@@ -16,7 +16,7 @@ export default function AllPosts() {
     const [sort, setSort] = useState('newest');
     const [searchTerm, setSearchTerm] = useState(search);
 
-    // Състояния за странициране
+    
     const [currentPage, setCurrentPage] = useState(1);
     const postsPerPage = 9;
 
@@ -90,15 +90,15 @@ export default function AllPosts() {
         filterPosts(posts.filter(post => post.id !== postId), category, sort);
     };
 
-    // Изчисляване на текущите постове за показване
+    
     const indexOfLastPost = currentPage * postsPerPage;
     const indexOfFirstPost = indexOfLastPost - postsPerPage;
     const currentPosts = filteredPosts.slice(indexOfFirstPost, indexOfLastPost);
 
-    // Функция за смяна на страниците
+    
     const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
-    // Генериране на номера на страниците
+    
     const pageNumbers = [];
     for (let i = 1; i <= Math.ceil(filteredPosts.length / postsPerPage); i++) {
         pageNumbers.push(i);

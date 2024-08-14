@@ -11,7 +11,6 @@ const MyPosts = () => {
         const fetchUserPosts = async () => {
             try {
                 const userPosts = await getPostsByUserHandle(userData.handle);
-                // Конвертиране на likedBy и dislikedBy в масиви, ако са обекти
                 const processedPosts = userPosts.map(post => ({
                     ...post,
                     likedBy: post.likedBy ? Object.keys(post.likedBy) : [],

@@ -12,14 +12,15 @@
 }
 
 body {
-    background-color: var(--primary-bg-color);
+    background: linear-gradient(135deg, #111117, #2b2b3a);
     color: var(--text-color);
     margin: 0;
     font-family: 'Inter', Arial, sans-serif;
 }
 
+
 header {
-    background-color: var(--secondary-bg-color);
+    background: linear-gradient(135deg, #111117, #2b2b3a);
     padding: 20px;
     display: flex;
     flex-direction: column;
@@ -31,19 +32,22 @@ header {
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-bottom: 20px;
+    margin-bottom: 15px;
 }
 
 .logo {
     height: 160px;
     width: auto;
-    margin-right: 1rem;
+    margin-right: -2.5rem;
 }
 
 h1 {
-    font-size: 1.8rem;
-    color: var(--text-color);
-    margin: 0;
+    font-family: 'New Amsterdam', serif; /* Използвай шрифта от Google Fonts */
+    font-size: 4em; /* Можеш да промениш размера на шрифта по твое желание */
+    font-weight: 800; /* Настройка на дебелината на шрифта */
+    color: #f0f0f0; /* Цвят на текста */
+    text-align: center;
+    margin-top: 50px;
 }
 
 .navbar {
@@ -140,7 +144,7 @@ h1 {
     left: 0;
     width: 70px;
     height: 100vh;
-    background-color: var(--secondary-bg-color);
+    background: linear-gradient(135deg, #111117, #2b2b3a);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -153,7 +157,7 @@ h1 {
 }
 
 .sidebar:hover {
-    width: 200px;
+    width: 120px;
 }
 
 .sidebar-icon-container {
@@ -277,7 +281,6 @@ h1 {
     color: var(--button-bg-color);
 }
 
-/* Responsive Styles */
 @media (max-width: 768px) {
     .content {
         margin-top: 30px;
@@ -509,7 +512,6 @@ footer {
     background-color: var(--button-bg-hover-color);
 }
 
-/* Промяна на стила на постовете */
 .post-card {
     background-color: var(--secondary-bg-color);
     border-radius: var(--border-radius);
@@ -549,7 +551,6 @@ footer {
     font-size: 0.9rem;
 }
 
-/* Стилове за Like и Dislike бутони */
 .like-btn,
 .dislike-btn {
     background-color: transparent;
@@ -562,7 +563,6 @@ footer {
     display: inline-flex;
     align-items: center;
     gap: 5px;
-    /* Разстояние между иконата и числото */
     transition: color 0.3s ease;
 }
 
@@ -665,29 +665,24 @@ footer {
 .like-btn,
 .dislike-btn {
     background-color: transparent;
-    /* Прозрачен фон по подразбиране */
     color: white;
-    /* Бял текст по подразбиране */
     border: none;
-    /* Без рамка */
     padding: 10px;
     cursor: pointer;
     margin-right: 5px;
     border-radius: 5px;
     transition: color 0.3s ease;
-    /* Плавен преход на цвета */
+    
 }
 
 .like-btn.active,
 .dislike-btn.active {
     color: #ff914d;
-    /* Оранжев цвят при активен бутон */
 }
 
 .like-btn:hover,
 .dislike-btn:hover {
     color: #ff914d;
-    /* Оранжев цвят при hover */
 }
 
 .post-actions {
@@ -828,17 +823,14 @@ footer {
     color: var(--button-bg-hover-color);
 }
 
-/* Upload Image Section */
 .create-post-page .upload-image-label {
     display: inline-block;
     padding: 10px 5px;
-    /* Направих бутона по-малък */
     background-color: var(--button-bg-color);
     color: var(--text-color);
     border-radius: var(--border-radius);
     cursor: pointer;
     font-size: 1rem;
-    /* Малко по-малък текст */
     text-align: center;
     transition: background-color var(--transition), transform 0.2s ease;
     margin-top: 10px;
@@ -851,7 +843,7 @@ footer {
 
 .create-post-page .upload-image-input {
     display: none;
-    /* Скрити Input, показва се само стилизираният бутон */
+    
 }
 
 
@@ -1100,12 +1092,11 @@ footer {
     display: inline-flex;
     align-items: center;
     color: #ff914d;
-    /* или друг цвят по ваш избор */
+    
 }
 
 .comment-reply-btn:hover {
     color: #ff7d2a;
-    /* цвят при hover */
 }
 
 .comment-delete-btn,
@@ -1120,12 +1111,10 @@ footer {
     display: inline-flex;
     align-items: center;
     color: #ff914d;
-    /* или друг цвят по ваш избор */
 }
 
 .comment-reply-btn:hover {
     color: #ff7d2a;
-    /* цвят при hover */
 }
 .filters-container {
     display: flex;
@@ -1203,7 +1192,7 @@ footer {
     margin-left: -5px;
     border-width: 5px;
     border-style: solid;
-    border-color: black transparent transparent transparent; /* Уверете се, че този стил съвпада с фона */
+    border-color: black transparent transparent transparent; 
 }
 
 .sidebar-icon-container:hover .tooltip {
@@ -1215,5 +1204,5 @@ footer {
 
 .sidebar-icon-container a:focus,
 .sidebar-icon-container button:focus {
-    outline: none; /* Премахва черната линия при фокус */
+    outline: none; 
 }

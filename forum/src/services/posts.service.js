@@ -19,7 +19,7 @@ export const getAllPosts = async (search = '') => {
         if (search) {
             return posts.filter(
                 post => post.title.toLowerCase().includes(search.toLowerCase()) ||
-                    (Array.isArray(post.tags) && post.tags.some(tag => tag.includes(search.toLowerCase()))) // Safe check
+                    (Array.isArray(post.tags) && post.tags.some(tag => tag.includes(search.toLowerCase()))) 
             );
         }
 

@@ -16,8 +16,8 @@ import { AppContext } from './state/app.context';
 import Login from './views/Login';
 import Authenticated from './hoc/Authenticated';
 import Register from './views/Register';
-import TopCommentedPostsPage from './views/TopCommentedPostsPage'; // Добавяне на новите страници
-import TopLikedPostsPage from './views/TopLikedPostsPage'; // Добавяне на новите страници
+import TopCommentedPostsPage from './views/TopCommentedPostsPage'; 
+import TopLikedPostsPage from './views/TopLikedPostsPage';
 import { auth } from './config/firebase-config';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { getUserData } from './services/users.service';
@@ -67,9 +67,9 @@ function App() {
             <Route path='/posts/:id' element={<Authenticated><SinglePost /></Authenticated>} />
             <Route path='/posts-create' element={<Authenticated><CreatePost /></Authenticated>} />
             <Route path='/admin' element={<Authenticated><AdminPanel /></Authenticated>} />
-            <Route path='/profile' element={<Authenticated><Profile /></Authenticated>} /> {/* Profile route */}
-            <Route path='/top-commented' element={<TopCommentedPostsPage />} /> {/* Нов рут за TopCommentedPostsPage */}
-            <Route path='/top-liked' element={<TopLikedPostsPage />} /> {/* Нов рут за TopLikedPostsPage */}
+            <Route path='/profile' element={<Authenticated><Profile /></Authenticated>} /> 
+            <Route path='/top-commented' element={<TopCommentedPostsPage />} /> 
+            <Route path='/top-liked' element={<TopLikedPostsPage />} /> 
             <Route path='/my-posts' element={<Authenticated><MyPosts /></Authenticated>} />
             <Route path='/login' element={<Login />} />
             <Route path='/register' element={<Register />} />

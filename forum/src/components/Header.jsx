@@ -32,7 +32,7 @@ export default function Header() {
             <>
               <NavLink to="/posts">All posts</NavLink>
               <NavLink to="/posts-create">Create post</NavLink>
-              <NavLink to="/profile">Profile</NavLink> {/* Profile button added here */}
+              <NavLink to="/profile">Profile</NavLink> 
               {userData?.isAdmin && ( 
                 <NavLink to="/admin">Admin Panel</NavLink> 
               )}

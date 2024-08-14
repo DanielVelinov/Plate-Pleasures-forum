@@ -9,7 +9,7 @@ export default function EditPost({ post, onSave }) {
         title: post.title,
         content: post.content,
         category: post.category,
-        tags: post.tags || [], // Include tags
+        tags: post.tags || [], 
     });
 
     const [tagInput, setTagInput] = useState('');

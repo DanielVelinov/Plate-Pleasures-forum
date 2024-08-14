@@ -18,7 +18,7 @@ export default function CreatePostComponent() {
     });
     const [tagInput, setTagInput] = useState('');
     const { userData } = useContext(AppContext);
-    const [imageUrl, setImageUrl] = useState(''); // Added state for image preview
+    const [imageUrl, setImageUrl] = useState(''); 
 
     const updatePost = (key, value) => {
         setPost({
@@ -61,7 +61,7 @@ export default function CreatePostComponent() {
 
             setPost({ title: '', content: '', category: '', tags: [], image: null });
             setTagInput('');
-            setImageUrl(''); // Reset image preview
+            setImageUrl(''); 
             alert('Post created successfully!');
         } catch (error) {
             console.error('Failed to create post:', error);
@@ -74,7 +74,7 @@ export default function CreatePostComponent() {
         if (file) {
             setPost({ ...post, image: file });
 
-            // Preview image
+            
             const reader = new FileReader();
             reader.onloadend = () => {
                 setImageUrl(reader.result);
