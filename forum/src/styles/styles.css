@@ -1162,7 +1162,6 @@ footer {
     position: relative;
     display: inline-block;
 }
-
 .tooltip {
     visibility: hidden;
     width: 100px;
@@ -1173,7 +1172,7 @@ footer {
     padding: 5px;
     position: absolute;
     z-index: 1;
-    bottom: 125%;
+    bottom: 125%; 
     left: 50%;
     margin-left: -50px;
     opacity: 0;
@@ -1182,7 +1181,9 @@ footer {
     text-transform: none; 
     border: none; 
     box-shadow: none; 
+    transform: translateY(20px); 
 }
+
 
 .tooltip::after {
     content: '';
