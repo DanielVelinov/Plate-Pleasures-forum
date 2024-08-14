@@ -17,7 +17,14 @@ body {
     margin: 0;
     font-family: 'Inter', Arial, sans-serif;
 }
-
+h1 {
+    font-family: 'New Amsterdam', serif; /* Използвай шрифта от Google Fonts */
+    font-size: 4em; /* Можеш да промениш размера на шрифта по твое желание */
+    font-weight: 800; /* Настройка на дебелината на шрифта */
+    color: #f0f0f0; /* Цвят на текста */
+    text-align: center;
+    margin-top: 50px;
+}
 
 header {
     background: linear-gradient(135deg, #111117, #2b2b3a);
@@ -41,14 +48,7 @@ header {
     margin-right: -2.5rem;
 }
 
-h1 {
-    font-family: 'New Amsterdam', serif; /* Използвай шрифта от Google Fonts */
-    font-size: 4em; /* Можеш да промениш размера на шрифта по твое желание */
-    font-weight: 800; /* Настройка на дебелината на шрифта */
-    color: #f0f0f0; /* Цвят на текста */
-    text-align: center;
-    margin-top: 50px;
-}
+
 
 .navbar {
     display: flex;
